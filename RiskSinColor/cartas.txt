@@ -1,0 +1,42 @@
+1;Alaska;soldado;Norte America
+2;Alberta;caballo;Norte America
+3;America Central;canion;Norte America
+4;Estados Unidos Orientales;soldado;Norte America
+5;Groenlandia;caballo;Norte America
+6;Territorio Noroccidental;canion;Norte America
+7;Ontario;soldado;Norte America
+8;Quebec;caballo;Norte America
+9;Estados Unidos Occidentales;canion;Norte America
+10;Argentina;soldado;Sur America
+11;Brasil;caballo;Sur America
+12;Peru;canion;Sur America
+13;Colombia;soldado;Sur America
+14;Gran Bretania;caballo;Europa
+15;Islandia;canion;Europa
+16;Europa del Norte;soldado;Europa
+17;Escandinavia;caballo;Europa
+18;Europa del Sur;canion;Europa
+19;Ucrania;soldado;Europa
+20;Europa Occidental;caballo;Europa
+21;Congo;canion;Africa
+22;Africa Oriental;soldado;Africa
+23;Egipto;caballo;Africa
+24;Madagascar;canion;Africa
+25;Africa del Norte;soldado;Africa
+26;Africa del Sur;caballo;Africa
+27;Afganistan;canion;Asia
+28;China;soldado;Asia
+29;India;caballo;Asia
+30;Irkustsk;canion;Asia
+31;Japon;soldado;Asia
+32;Kamchatka;caballo;Asia
+33;Medio Oriente;canion;Asia
+34;Mongolia;soldado;Asia
+35;Siam;caballo;Asia
+36;Siberia;canion;Asia
+37;Ural;soldado;Asia
+38;Yakutsk;caballo;Asia
+39;Australia Oriental;canion;Oceania
+40;Indonesia;soldado;Oceania
+41;Nueva Guinea;caballo;Oceania
+42;Australia Occidental;canion;Oceania
