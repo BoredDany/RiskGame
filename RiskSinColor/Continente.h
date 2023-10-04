@@ -28,6 +28,7 @@ public:
     bool intercambioPorPaises(int idJ);
     bool moverUnidad(int idP, int unidades);
     bool fortificar(int idP, int idJ, int unidades);
+    int jugadorPosee(int idJ);
 };
 
 #endif //RISK_CONTINENTE_H

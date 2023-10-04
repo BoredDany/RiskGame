@@ -140,3 +140,14 @@ bool Continente::fortificar(int idP, int idJ, int unidades){
     }
     return fortificado;
 }
+
+int Continente::jugadorPosee(int idJ){
+    int p = 0;
+    std::list<Pais>::iterator it = paises.begin();
+    for(it = paises.begin() ; it != paises.end() ; it++){
+        if(it->get_id_jugador() == idJ){
+            p++;
+        }
+    }
+    return p;
+}

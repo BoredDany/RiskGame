@@ -7,6 +7,8 @@
 #include "Carta.h"
 #include "Jugador.h"
 #include "Continente.h"
+#include "Partida.h"
+
 using namespace std;
 
 bool tiene_espacio(string comando, string cd[]) {
@@ -205,4 +207,128 @@ void mostrarTablero(){
     cout<<"|                     /.                                             '  |"<<endl;
     cout<<"+                                                                       +"<<endl;
     cout<<"+-----+-----+-----+-----+-----+-----+-----+-----+-----+-----+-----+-----+"<<endl;
+}
+
+void escribirArchivo(Partida& partida, std::string fileName){
+    //formato
+    //ID,nombre,color,unidades,numCartas,carta,numPaises,pais-unidades;
+
+    std::ofstream outputfile(fileName);
+    if(outputfile.is_open()){
+        for(Jugador j : partida.get_jugadores()){
+            //datos del jugador
+            outputfile << j.getId() << ","
+                    << j.getAlias() << ","
+                    << j.getColor() << ","
+                    << j.getUnidades() << ","
+                    << j.getCartas().size() << ",";
+            //cartas del jugador
+            for(Carta c : j.getCartas()){
+                outputfile << c.getId() << ",";
+            }
+
+            int cantPaises = 0;
+
+
+            for(Continente c : partida.get_tablero()){
+                cantPaises += c.jugadorPosee(j.getId());
+            }
+
+            outputfile << cantPaises;
+
+            //paises ocupados por el jugador
+            for(Continente c : partida.get_tablero()){
+                for(Pais p : c.get_paises()){
+                    if(p.get_id_jugador() == j.getId()){
+                        outputfile << ",";
+                        outputfile << p.get_id() << "-" << p.get_unidades();
+                    }
+                }
+            }
+
+            outputfile << ";";
+        }
+    }else{
+        cout << "No se creo archivo " << fileName << endl;
+    }
+    outputfile.close();
+}
+
+std::string leerArchivo(std::string fileName, Partida& risk){
+    std::string line;
+    std::stringstream str;
+    if(inputfile.is_open()){
+        while (getline(inputfile, line)){
+            str << line;
+        }
+    }else{
+        cout << "No se creo archivo " << fileName << endl;
+    }
+    return line;
+}
+void inicializarConArchivo(std::string info, Partida& risk){
+    //formato
+    //ID,nombre,color,unidades,numCartas,carta,numPaises,pais-unidades;
+
+    std::ifstream inputfile(fileName);
+    std::string line, word, word2, word3, id, nombre, color;
+    int unidades, numCartas, numPaises, unidadesP, carta, pais;
+    std::stringstream str;
+
+    if(inputfile.is_open()){
+
+        while (getline(inputfile, line)){
+            str << line;
+        }
+        while (getline( str, word,';')){
+            std::stringstream ss(word);
+
+            getline(ss,word2,',');
+            id = word2;
+            cout<<"ID: "<<id<<endl;
+
+            getline(ss,word2,',');
+            nombre = word2;
+            cout<<"nombre: "<<nombre<<endl;
+
+            getline(ss,word2,',');
+            color = word2;
+            cout<<"color: "<<color<<endl;
+
+            getline(ss,word2,',');
+            unidades = stoi(word2);
+            cout<<"unidades: "<<unidades<<endl;
+
+            getline(ss,word2,',');
+            numCartas = stoi(word2);
+            cout<<"numero cartas: "<<numCartas<<endl;
+
+            for(int i = 0 ; i < numCartas ; i++){
+                getline(ss,word2,',');
+                carta = stoi(word2);
+                cout<<"carta: "<<carta<<endl;
+            }
+
+            getline(ss,word2,',');
+            numPaises = stoi(word2);
+            cout<<"numero paises: "<<numPaises<<endl;
+
+            for(int i = 0 ; i < numPaises ; i++){
+                getline(ss,word2,',');
+                std::stringstream ss(word2);
+                getline(ss,word3,'-');
+                pais = stoi(word2);
+                cout<<"pais: "<< pais;
+
+                getline(ss,word3,'-');
+                unidadesP = stoi(word2);
+                cout<<" unidades: "<<unidadesP<<endl;
+            }
+
+        }
+
+    }else{
+        cout << "No se creo archivo " << fileName << endl;
+    }
+
 }

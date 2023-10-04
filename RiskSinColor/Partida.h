@@ -23,6 +23,7 @@ public:
     std::list<Carta> get_cartas();
     std::list<Continente> get_tablero();
     void set_id(int id);
+    void aggJugador(Jugador j);
 
     //funciones relacionadas a inicializar
     int countLines(std::string archivo_cartas);

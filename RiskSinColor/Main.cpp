@@ -174,12 +174,15 @@ int main() {
             }
             else if (cd[0] == "guardar") {
                 cout << "Guardar en archivo de texto '" << cd[1] << "' :recibido"<< endl;
+                escribirArchivo(risk, cd[1]);
             }
             else if (cd[0] == "guardar_comprimido") {
                 cout << "Guardar en archivo binario '" << cd[1] << "' :recibido"<< endl;
             }
             else if (cd[0] == "inicializar") {
                 cout << "Inicializar juego del archivo '" << cd[1] << "' :recibido"<< endl;
+                leerArchivo(cd[1], risk);
+                inicializado = true;
             }
             else if (cd[0] == "costo_conquista") {
                 cout << "Costo de la conquista " << cd[1] << " :recibido" << endl;

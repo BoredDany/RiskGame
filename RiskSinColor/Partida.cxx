@@ -26,6 +26,10 @@ void Partida::set_id(int id){
     this->id = id;
 }
 
+void Partida::aggJugador(Jugador j){
+    (this->jugadores).push_back(j);
+}
+
 int Partida::countLines(std::string archivo_cartas){
     int i = 0;
     std::string line;
