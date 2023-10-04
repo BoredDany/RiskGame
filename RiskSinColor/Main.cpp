@@ -180,14 +180,19 @@ int main() {
                 cout << "Guardar en archivo binario '" << cd[1] << "' :recibido"<< endl;
             }
             else if (cd[0] == "inicializar") {
-                cout << "Inicializar juego del archivo '" << cd[1] << "' :recibido"<< endl;
-                risk.cargarCartas(archivo_cartas);
-                risk.inicializarTablero();
-                risk.llenarContinentes();
-                risk.cargarConexiones(archivo_conexiones);
-                inicializarConArchivo(cd[1], risk);
-                risk.mostrarInicializacion();
-                inicializado = true;
+                if(!=inicializado){
+                    cout << "Inicializar juego del archivo '" << cd[1] << "' :recibido"<< endl;
+                    risk.cargarCartas(archivo_cartas);
+                    risk.inicializarTablero();
+                    risk.llenarContinentes();
+                    risk.cargarConexiones(archivo_conexiones);
+                    inicializarConArchivo(cd[1], risk);
+                    risk.mostrarInicializacion();
+                    inicializado = true;
+                }else{
+                    cout << "Juego en curso" << endl;
+                }
+
             }
             else if (cd[0] == "costo_conquista") {
                 cout << "Costo de la conquista " << cd[1] << " :recibido" << endl;
