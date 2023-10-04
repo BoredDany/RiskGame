@@ -1,0 +1,62 @@
+GUARDAR <ARCHIVO>
+
+1. Escribir archivo de texto
+2. Guardar en vector ordenado simbolos con su frecuencia: letra-frecuencia y eliminar archivo de texto
+3. Armar arbol con el vector de frecuencias
+4. Guardar info de archivo en string
+5. recorrer string y codificar cada simbolo con el arbol: escribir la codificacion en vector
+6. escribir archivo codificado: primera linea es vector de frecuencias, segunda linea es el codigo
+
+
+INICIALIZAR <ARCHIVO>
+1. Abrir archivo
+2. leer primera linea: vector de frecuencias
+3. leer segunda linea y guardarla en vector
+4. armar arbol
+5. recorrer arbol con el vector y escribir el simbolo en string
+6. leer el string e inicializar el juego
+
+-----------------------------------------------------------------------------------------------------------------
+
+TAD Simbolo
+Datos
+- simbolo: string
+- frecuencia: int
+
+Operaciones
+
+-----------------------------------------------------------------------------------------------------------------
+
+TAD NodoHUFF
+Datos
+
+Operaciones
+
+-----------------------------------------------------------------------------------------------------------------
+
+TAD ArbolHUFF
+Datos
+
+Operaciones
+
+-----------------------------------------------------------------------------------------------------------------
+
+TAD Persistencia
+Datos
+- simbolos: vector de Simbolo
+- arbol: arbolHuffman
+- codigo: vector de int
+- decodificacion: string
+
+Operaciones
++ escribirArchivo(): escribe partida en txt
++ setSimbolos(): lee archivo txt y crea vector de simbolos -> letra y su frecuencia
++ setArbol(): crea arbol con el vector de simbolos
++ setDecodificacion(): lee archivo txt y guarda todo en un string
++ codificar(): recorre string de la info, para cada simbolo recorre el arbol, lo codifica y va llenando vector de codigo
++ guardar(): escribe en archivo txt el la linea 1 el vector de simbolos y el la linea 2 el vector del codigo
++ cargarArchivo(): lee archivo de codificacion, crea vector de simbolos, creea vector del codigo
++ decodificar(): recorre vector del codigo, para cada recorre el arbol, encuentra el simbolo y lo guarda en decodificacion
++ recuperarPartida(): recorre string decodificación y va asignando los datos a la partida
+
+-----------------------------------------------------------------------------------------------------------------

@@ -181,7 +181,12 @@ int main() {
             }
             else if (cd[0] == "inicializar") {
                 cout << "Inicializar juego del archivo '" << cd[1] << "' :recibido"<< endl;
-                leerArchivo(cd[1], risk);
+                risk.cargarCartas(archivo_cartas);
+                risk.inicializarTablero();
+                risk.llenarContinentes();
+                risk.cargarConexiones(archivo_conexiones);
+                inicializarConArchivo(cd[1], risk);
+                risk.mostrarInicializacion();
                 inicializado = true;
             }
             else if (cd[0] == "costo_conquista") {

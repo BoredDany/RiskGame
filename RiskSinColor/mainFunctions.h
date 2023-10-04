@@ -209,6 +209,7 @@ void mostrarTablero(){
     cout<<"+-----+-----+-----+-----+-----+-----+-----+-----+-----+-----+-----+-----+"<<endl;
 }
 
+//escribe juego en txt
 void escribirArchivo(Partida& partida, std::string fileName){
     //formato
     //ID,nombre,color,unidades,numCartas,carta,numPaises,pais-unidades;
@@ -254,9 +255,11 @@ void escribirArchivo(Partida& partida, std::string fileName){
     outputfile.close();
 }
 
-std::string leerArchivo(std::string fileName, Partida& risk){
+//lee txt y guarda info en string
+std::string leerArchivo(std::string fileName){
     std::string line;
     std::stringstream str;
+    std::ifstream inputfile (fileName);
     if(inputfile.is_open()){
         while (getline(inputfile, line)){
             str << line;
@@ -266,69 +269,64 @@ std::string leerArchivo(std::string fileName, Partida& risk){
     }
     return line;
 }
-void inicializarConArchivo(std::string info, Partida& risk){
+
+//lee string e inicializa juego con ello
+void inicializarConArchivo(std::string fileName, Partida& risk){
     //formato
     //ID,nombre,color,unidades,numCartas,carta,numPaises,pais-unidades;
 
-    std::ifstream inputfile(fileName);
-    std::string line, word, word2, word3, id, nombre, color;
-    int unidades, numCartas, numPaises, unidadesP, carta, pais;
-    std::stringstream str;
+    std::string info = leerArchivo(fileName);
+    std::stringstream str (info);
+    std::string word, word2, word3, nombre, color;
+    int id, unidades, numCartas, numPaises, unidadesP, carta, pais;
 
-    if(inputfile.is_open()){
+    while (getline( str, word,';')){
 
-        while (getline(inputfile, line)){
-            str << line;
-        }
-        while (getline( str, word,';')){
-            std::stringstream ss(word);
+        Jugador j;
+        std::stringstream ss(word);
+        getline(ss,word2,',');
+        id = stoi (word2);
+        j.setId(id);
 
+        getline(ss,word2,',');
+        nombre = word2;
+        j.setAlias(nombre);
+
+        getline(ss,word2,',');
+        color = word2;
+        j.setColor(color);
+
+        getline(ss,word2,',');
+        unidades = stoi(word2);
+        j.setUnidades(unidades);
+
+        getline(ss,word2,',');
+        numCartas = stoi(word2);
+
+        for(int i = 0 ; i < numCartas ; i++){
             getline(ss,word2,',');
-            id = word2;
-            cout<<"ID: "<<id<<endl;
-
-            getline(ss,word2,',');
-            nombre = word2;
-            cout<<"nombre: "<<nombre<<endl;
-
-            getline(ss,word2,',');
-            color = word2;
-            cout<<"color: "<<color<<endl;
-
-            getline(ss,word2,',');
-            unidades = stoi(word2);
-            cout<<"unidades: "<<unidades<<endl;
-
-            getline(ss,word2,',');
-            numCartas = stoi(word2);
-            cout<<"numero cartas: "<<numCartas<<endl;
-
-            for(int i = 0 ; i < numCartas ; i++){
-                getline(ss,word2,',');
-                carta = stoi(word2);
-                cout<<"carta: "<<carta<<endl;
-            }
-
-            getline(ss,word2,',');
-            numPaises = stoi(word2);
-            cout<<"numero paises: "<<numPaises<<endl;
-
-            for(int i = 0 ; i < numPaises ; i++){
-                getline(ss,word2,',');
-                std::stringstream ss(word2);
-                getline(ss,word3,'-');
-                pais = stoi(word2);
-                cout<<"pais: "<< pais;
-
-                getline(ss,word3,'-');
-                unidadesP = stoi(word2);
-                cout<<" unidades: "<<unidadesP<<endl;
-            }
-
+            carta = stoi(word2);
+            Carta c = risk.obtenerCarta(carta);
+            j.agregarCarta(c);
         }
 
-    }else{
-        cout << "No se creo archivo " << fileName << endl;
+        getline(ss,word2,',');
+        numPaises = stoi(word2);
+
+        for(int i = 0 ; i < numPaises ; i++){
+            getline(ss,word2,',');
+            std::stringstream ss(word2);
+            getline(ss,word3,'-');
+            pais = stoi(word3);
+
+            getline(ss,word3,'-');
+            unidadesP = stoi(word3);
+
+            risk.ocuparPais(j.getId(),pais,unidadesP);
+        }
+
+        risk.aggJugador(j);
+
     }
 
 }
