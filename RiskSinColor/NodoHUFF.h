@@ -1,0 +1,9 @@
+#ifndef RISKSINCOLOR_NODOHUFF_H
+#define RISKSINCOLOR_NODOHUFF_H
+
+class NodoHUFF{
+private:
+public:
+};
+
+#endif //RISKSINCOLOR_NODOHUFF_H

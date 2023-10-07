@@ -17,6 +17,7 @@ int main() {
     int numTurno = 0, paisOrigen = 0, paisDestino = 0, intercambios = 0, numIntercambios = 1, unidadesGanadas = 4, ganador = 0, rta = 0;;
     Partida risk(0);
 
+
     cout << "BIENVENIDO A RISK - GRUPO 2" << endl << endl << endl;
     inicio();
 
@@ -173,14 +174,19 @@ int main() {
 
             }
             else if (cd[0] == "guardar") {
-                cout << "Guardar en archivo de texto '" << cd[1] << "' :recibido"<< endl;
-                escribirArchivo(risk, cd[1]);
+                if(!inicializado){
+                    cout << "Juego no inicializado"<< endl;
+                }else{
+                    cout << "Guardar en archivo de texto '" << cd[1] << "' :recibido"<< endl;
+                    cout << "Comando correcto"<< endl;
+                    escribirArchivo(risk, cd[1]);
+                }
             }
             else if (cd[0] == "guardar_comprimido") {
                 cout << "Guardar en archivo binario '" << cd[1] << "' :recibido"<< endl;
             }
             else if (cd[0] == "inicializar") {
-                if(!=inicializado){
+                if(!inicializado){
                     cout << "Inicializar juego del archivo '" << cd[1] << "' :recibido"<< endl;
                     risk.cargarCartas(archivo_cartas);
                     risk.inicializarTablero();
