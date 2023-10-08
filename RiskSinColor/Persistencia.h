@@ -29,7 +29,7 @@ public:
     void setArbol(ArbolHUFF arbol);
     //operaciones
     void escribirArchivoTxt(std::string nameFile, Partida& partida);
-    void leerArchivoTxt(std::string nameFile);
+    bool leerArchivoTxt(std::string nameFile);
     void crearArbol();
     void recuperarPartidaConTxt(std::string nameFile, Partida& partida);
 

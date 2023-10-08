@@ -181,7 +181,6 @@ int main() {
                     cout << "Guardar en archivo de texto '" << cd[1] << "' :recibido"<< endl;
                     cout << "Comando correcto"<< endl;
                     persistencia.escribirArchivoTxt(cd[1], risk);
-                    //escribirArchivo(risk, cd[1]);
                 }
             }
             else if (cd[0] == "guardar_comprimido") {
@@ -189,15 +188,18 @@ int main() {
             }
             else if (cd[0] == "inicializar") {
                 if(!inicializado){
-                    cout << "Inicializar juego del archivo '" << cd[1] << "' :recibido"<< endl;
-                    risk.cargarCartas(archivo_cartas);
-                    risk.inicializarTablero();
-                    risk.llenarContinentes();
-                    risk.cargarConexiones(archivo_conexiones);
-                    persistencia.leerArchivoTxt(cd[1]);
-                    persistencia.recuperarPartidaConTxt(cd[1],risk);
-                    risk.mostrarInicializacion();
-                    inicializado = true;
+                    if(persistencia.leerArchivoTxt(cd[1])){
+                        cout << "Inicializacion del juego con archivo '" << cd[1] << "' correcta"<< endl;
+                        risk.cargarCartas(archivo_cartas);
+                        risk.inicializarTablero();
+                        risk.llenarContinentes();
+                        risk.cargarConexiones(archivo_conexiones);
+                        persistencia.recuperarPartidaConTxt(cd[1],risk);
+                        risk.mostrarInicializacion();
+                        inicializado = true;
+                    }else{
+                        cout << "Archivo vacio o incompleto\n";
+                    }
                 }else{
                     cout << "Juego en curso" << endl;
                 }

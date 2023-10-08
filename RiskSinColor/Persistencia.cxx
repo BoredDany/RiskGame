@@ -90,7 +90,7 @@ void Persistencia::escribirArchivoTxt(std::string nameFile, Partida& partida){
     outputfile.close();
 }
 
-void Persistencia::leerArchivoTxt(std::string nameFile){
+bool Persistencia::leerArchivoTxt(std::string nameFile){
     std::string line;
     std::stringstream str;
     std::ifstream inputfile (nameFile);
@@ -99,8 +99,9 @@ void Persistencia::leerArchivoTxt(std::string nameFile){
             this->aggInfo(line);
         }
     }else{
-        std::cout << "No se creo archivo " << nameFile << std::endl;
+        return false;
     }
+    return true;
 }
 void Persistencia::crearArbol(){
 
