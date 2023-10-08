@@ -13,7 +13,9 @@ private:
     std::string pais;
     std::string continente;
 public:
+    //constructores
     Carta (int id, std::string fig, std::string cont, std::string pai);
+    //getters
     int getId();
     std::string getFigura();
     std::string getContinente();

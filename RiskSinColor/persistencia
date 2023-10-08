@@ -57,9 +57,11 @@ Operaciones
 + setArbol(): crea arbol con el vector de simbolos
 + setDecodificacion(): lee archivo txt y guarda todo en un string **usaado tmb en guardar normal
 + codificar(): recorre string de la info, para cada simbolo recorre el arbol, lo codifica y va llenando vector de codigo
-+ guardar(): escribe en archivo txt el la linea 1 el vector de simbolos y el la linea 2 el vector del codigo
-+ cargarArchivo(): lee archivo de codificacion, crea vector de simbolos, creea vector del codigo
++ guardar(): escribe en archivo bin : n c1 f1 · · · cn fn w binary_code
++ cargarArchivo(): lee archivo bin, crea vector de simbolos, creea vector del codigo
 + decodificar(): recorre vector del codigo, para cada recorre el arbol, encuentra el simbolo y lo guarda en decodificacion
 + recuperarPartida(): recorre string decodificación y va asignando los datos a la partida **usaado tmb en guardar normal
 
 -----------------------------------------------------------------------------------------------------------------
+
+g++ -std=c++11 -o testr Jugador.cxx Carta.cxx Pais.cxx Continente.cxx Partida.cxx Main.cpp NodoHUFF.cxx ArbolHUFF.cxx Simbolo.cxx Persistencia.cxx

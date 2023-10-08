@@ -2,8 +2,9 @@
 #include "Continente.h"
 #include <cstring>
 
+//constructores
+//--------------------------------------------------------------------
 Jugador::Jugador(){
-
 }
 
 Jugador::Jugador(int id, std::string color, std::string alias) {
@@ -13,6 +14,8 @@ Jugador::Jugador(int id, std::string color, std::string alias) {
     this->unidades = 0;
 }
 
+//getters
+//--------------------------------------------------------------------
 int Jugador::getId() {
     return id;
 }
@@ -33,6 +36,8 @@ std::list<Carta> Jugador::getCartas(){
     return cartas;
 }
 
+//setters
+//--------------------------------------------------------------------
 void Jugador::setId(int idN) {
     this->id = idN;
 }
@@ -53,6 +58,8 @@ void Jugador::setCartas(std::list<Carta> cartasN){
     this->cartas = cartasN;
 }
 
+//operaciones
+//--------------------------------------------------------------------
 void Jugador::agregarCarta(Carta carta) {
     cartas.push_back(carta);
 }
@@ -71,8 +78,8 @@ void Jugador::quitarCarta(int idP) {
 void Jugador::tresCartasCumplen(int * ganaIguales, int * ganaTodas){
     std::list<Carta>::iterator it = cartas.begin();
     std::list<Carta>::iterator itEliminar = cartas.end();
-
     int soldado = 0, canion = 0, caballo = 0;
+
     for(it = cartas.begin();it != cartas.end();it++){
         if(it->getFigura() == "soldado"){
             soldado+=1;
@@ -87,7 +94,7 @@ void Jugador::tresCartasCumplen(int * ganaIguales, int * ganaTodas){
     if(soldado > 0 && canion > 0 && caballo > 0){
         *ganaTodas = 1;
     }
-    if(soldado >= 3 || canion >= 3 || caballo >=3){
+    else if(soldado >= 3 || canion >= 3 || caballo >=3){
         *ganaIguales = 1;
     }
 }

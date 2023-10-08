@@ -1,6 +1,8 @@
 #include "Carta.h"
 #include <cstring>
 
+//constructores
+//--------------------------------------------------------------------
 Carta::Carta(int id, std::string fig, std::string cont, std::string pai) {
     this->id = id;
     this->figura = fig;
@@ -8,6 +10,8 @@ Carta::Carta(int id, std::string fig, std::string cont, std::string pai) {
     this->pais = pai;
 }
 
+//getters
+//--------------------------------------------------------------------
 int Carta::getId(){
     return id;
 };

@@ -7,6 +7,8 @@
 #include <iostream>
 #include "Pais.h"
 
+//constructores
+//--------------------------------------------------------------------
 Pais::Pais(int id, std::string nombre,  std::string continente) {
     this->id = id;
     this->nombre = nombre;
@@ -15,6 +17,8 @@ Pais::Pais(int id, std::string nombre,  std::string continente) {
     this->unidades = 0;
 }
 
+//getters
+//--------------------------------------------------------------------
 int Pais::get_id() {
     return id;
 }
@@ -39,6 +43,8 @@ std::list<int> Pais::get_conexiones() {
     return conexiones;
 }
 
+//setters
+//--------------------------------------------------------------------
 void Pais::set_unidades(int unidades) {
     this->unidades = unidades;
 }
@@ -47,6 +53,8 @@ void Pais::set_id_jugador(int id_jugador) {
     this->id_jugador = id_jugador;
 }
 
+//operaciones
+//--------------------------------------------------------------------
 void Pais::agg_conexion(int conexion) {
     this->conexiones.push_back(conexion);
 }

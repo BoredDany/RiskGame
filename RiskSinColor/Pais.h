@@ -16,15 +16,19 @@ private:
     int id_jugador;
     std::list<int> conexiones;
 public:
+    //constructores
     Pais(int id, std::string nombre, std::string continente);
+    //getters
     int get_id();
     std::string get_nombre();
     std::string get_continente();
     int get_unidades();
     int get_id_jugador();
     std::list<int> get_conexiones();
+    //setters
     void set_unidades(int unidades);
     void set_id_jugador(int id_jugador);
+    //operaciones
     void agg_conexion(int conexion);
     bool esVecino(int idP);
 };
