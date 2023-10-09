@@ -59,3 +59,6 @@ void NodoHUFF::setHijoD(NodoHUFF * hijoD){
 
 //operaciones
 //--------------------------------------------------------------------
+bool NodoHUFF::hoja() {
+    return this->hijoD == nullptr && this->hijoI == nullptr;
+}

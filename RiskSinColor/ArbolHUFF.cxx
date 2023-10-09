@@ -44,27 +44,12 @@ void ArbolHUFF::setRaiz(NodoHUFF * raiz){
 // --------------------------------------------------------------------
 
 // Codificar un mensaje utilizando un árbol de Huffman
-void ArbolHUFF::codificar(std::vector<std::pair<int8_t, int64_t>> simbolos, std::vector<int64_t>& codigo) {
-    if (raiz == nullptr || simbolos.empty()) {
-        return;
-    }
+void ArbolHUFF::codificar(std::pair<int8_t, int64_t> simbolo, std::vector<int64_t>& codigo) {
+    NodoHUFF * nodo = this->raiz;
+    int64_t izq = 0;
+    int64_t der = 1;
 
-    std::unordered_map<int8_t, std::string> CodigoHuffman;
-    construirCodigoHuffman(raiz, "", CodigoHuffman);
 
-    for (const auto& simbolo : simbolos) {
-        int8_t caracter = simbolo.first;
-        if (CodigoHuffman.find(caracter) != CodigoHuffman.end()) {
-            std::string codigoCaracter = CodigoHuffman[caracter];
-            for (char bit : codigoCaracter) {
-                if (bit == '0') {
-                    codigo.push_back(0);
-                } else {
-                    codigo.push_back(1);
-                }
-            }
-        }
-    }
 }
 
 

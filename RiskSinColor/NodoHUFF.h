@@ -24,6 +24,7 @@ public:
     void setHijoI(NodoHUFF * hijoI);
     void setHijoD(NodoHUFF * hijoD);
     //operaciones
+    bool hoja();
 };
 
 #endif //RISKSINCOLOR_NODOHUFF_H

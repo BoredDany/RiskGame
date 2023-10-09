@@ -211,10 +211,9 @@ int main() {
                             risk.inicializarTablero();
                             risk.llenarContinentes();
                             risk.cargarConexiones(archivo_conexiones);
-                            persistencia.recuperarPartidaConTxt(cd[1],risk);
+                            persistencia.recuperarPartida(cd[1],risk);
                             risk.mostrarInicializacion();
                             inicializado = true;
-                            persistencia.setSimbolos();
                         }else{
                             cout << "Archivo vacio o incompleto\n";
                         }

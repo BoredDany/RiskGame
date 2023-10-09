@@ -49,6 +49,7 @@ void Persistencia::aggInfo(std::string caracterNuevo){
 
 void Persistencia::setInfo(Partida& partida){
     int cantPaises;
+    this->info = "";
     for(Jugador j : partida.get_jugadores()){
         //datos del jugador
         (this->info).append(std::to_string(j.getId()));
@@ -183,14 +184,34 @@ void Persistencia::escribirArchivoBinario(std::string nameFile, Partida& partida
         file.write(reinterpret_cast<char*>(&w), sizeof(w));
 
         //bynary_code : secuencia de 1s y 0s
+        this->arbol.armarArbol(this->simbolos);
 
-        this->info = "";
+        /*for(int i = 0 ; i < this->info.length() ; i++){
+            std::pair<int8_t, int64_t> simbolo = buscarSimbolo(this->info[i]);
+            this->arbol.codificar(simbolo, this->codigo);
+        }*/
+
+        std::pair<int8_t, int64_t> simbolo = buscarSimbolo(this->info[0]);
+        this->arbol.codificar(simbolo, this->codigo);
+
+        for(int64_t c : this->codigo){
+            std::cout << c << " ";
+        }
 
     }else{
         std::cout << "No se creo archivo binario";
     }
     file.close();
-    //this->arbol.armarArbol(this->simbolos);
+
+
+}
+
+std::pair<int8_t, int64_t> Persistencia::buscarSimbolo(char letra){
+    for(std::pair<int8_t, int64_t> s : this->simbolos){
+        if(s.first == static_cast<int8_t>(letra)) {
+            return s;
+        }
+    }
 }
 
 bool Persistencia::leerArchivoTxt(std::string nameFile){
@@ -244,7 +265,7 @@ bool Persistencia::leerArchivoBin(std::string nameFile){
     return true;
 }
 
-void Persistencia::recuperarPartidaConTxt(std::string nameFile, Partida& partida){
+void Persistencia::recuperarPartida(std::string nameFile, Partida& partida){
     //formato
     //ID,nombre,color,unidades,numCartas,carta,numPaises,pais-unidades;
 
@@ -303,6 +324,5 @@ void Persistencia::recuperarPartidaConTxt(std::string nameFile, Partida& partida
             partida.aggJugador(j);
 
         }
-        this->info = "";
     }
 }
