@@ -2,8 +2,11 @@
 #define RISKSINCOLOR_ARBOLHUFF_H
 
 #include "NodoHUFF.h"
-#include "Simbolo.h"
 #include <vector>
+#include <utility>
+#include <cstdint>
+#include <deque>
+#include <unordered_map>
 
 class ArbolHUFF{
 private:
@@ -11,7 +14,7 @@ private:
 public:
     //constructores
     ArbolHUFF();
-    ArbolHUFF(Simbolo& raiz);
+    ArbolHUFF(std::pair<int8_t, int64_t>& raiz);
     //desstructores
     ~ArbolHUFF();
     //getters
@@ -19,9 +22,14 @@ public:
     //setters
     void setRaiz(NodoHUFF * raiz);
     //operaciones
-    void insertar(std::vector<Simbolo> simbolos);
-    void codificar(std::vector<Simbolo> simbolos, std::vector<int> codigo);
-    void decodificar(std::vector<int> codigo, std::vector<Simbolo> simbolos);
+    void armarArbol(std::vector<std::pair<int8_t, int64_t>> simbolos);
+    void addToDeque(std::deque< NodoHUFF * >& simbolos, NodoHUFF * nuevo);
+    void insertar(std::vector<std::pair<int8_t, int64_t>> simbolos);
+    void codificar(std::vector<std::pair<int8_t, int64_t>> simbolos, std::vector<int64_t>& codigo);
+    void construirCodigoHuffman(NodoHUFF* nodo, std::string codigo, std::unordered_map<int8_t, std::string>& CodigoHuffman);
+    void decodificar(std::vector<int64_t> codigo, std::vector<std::pair<int8_t, int64_t>>& simbolos);
+    //recorridos
+    void nivelOrden();
 
 };
 

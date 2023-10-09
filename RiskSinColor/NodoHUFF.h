@@ -1,21 +1,23 @@
 #ifndef RISKSINCOLOR_NODOHUFF_H
 #define RISKSINCOLOR_NODOHUFF_H
 
-#include "Simbolo.h"
+#include <utility>
+#include <cstdint>
 
 class NodoHUFF{
 private:
-    Simbolo simbolo;
+    std::pair<int8_t, int64_t> simbolo;
     NodoHUFF * hijoI;
     NodoHUFF * hijoD;
 public:
     //constructores
     NodoHUFF();
-    NodoHUFF(Simbolo simbolo);
+    NodoHUFF(int64_t frecuencia);
+    NodoHUFF(std::pair<int8_t, int64_t> simbolo);
     //desstructores
     ~NodoHUFF();
     //getters
-    Simbolo getSimbolo();
+    std::pair<int8_t, int64_t> getSimbolo();
     NodoHUFF * getHijoI();
     NodoHUFF * getHijoD();
     //setters

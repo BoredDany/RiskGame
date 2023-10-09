@@ -208,3 +208,13 @@ void mostrarTablero(){
     cout<<"+                                                                       +"<<endl;
     cout<<"+-----+-----+-----+-----+-----+-----+-----+-----+-----+-----+-----+-----+"<<endl;
 }
+
+bool verificarArchivo(std::string nameFile, std::string extension){
+    if(nameFile.length() > extension.length() &&
+        nameFile.compare(nameFile.length() - extension.length(),
+                         extension.length(),
+                         extension) == 0){
+        return true;
+    }
+    return false;
+}

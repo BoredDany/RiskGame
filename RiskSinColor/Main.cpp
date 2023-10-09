@@ -1,6 +1,3 @@
-//
-// Created by Estudiante on 13/08/2023.
-//
 #include <iostream>
 #include "mainFunctions.h"
 #include "Persistencia.h"
@@ -12,6 +9,8 @@ int main() {
 
     string comando, comando_ayuda;
     string cd[5];
+    string extensionTxt = ".txt";
+    string extensionBin = ".bin";
     string archivo_cartas = "cartas.txt";
     string archivo_conexiones = "Conexiones.txt";
     bool hayEspacio = false, inicializado = false, finalizado = false;
@@ -178,28 +177,56 @@ int main() {
                 if(!inicializado){
                     cout << "Juego no inicializado"<< endl;
                 }else{
-                    cout << "Guardar en archivo de texto '" << cd[1] << "' :recibido"<< endl;
-                    cout << "Comando correcto"<< endl;
-                    persistencia.escribirArchivoTxt(cd[1], risk);
+                    if(verificarArchivo(cd[1],extensionTxt)){
+                        cout << "Guardar en archivo de texto '" << cd[1] << "' :recibido"<< endl;
+                        cout << "Comando correcto"<< endl;
+                        persistencia.escribirArchivoTxt(cd[1], risk);
+                    }else{
+                        cout << "Extension de archivo no valida"<< endl;
+                    }
                 }
             }
             else if (cd[0] == "guardar_comprimido") {
-                cout << "Guardar en archivo binario '" << cd[1] << "' :recibido"<< endl;
+                if(!inicializado){
+                    cout << "Juego no inicializado"<< endl;
+                }else{
+                    if(verificarArchivo(cd[1],extensionBin)){
+                        cout << "Guardar en archivo binario '" << cd[1] << "' :recibido"<< endl;
+                        cout << "Comando correcto"<< endl;
+
+                        persistencia.setInfo(risk);
+                        cout << "INFO-------------------------" << endl;
+                        cout << persistencia.getInfo() << endl;
+                        persistencia.setSimbolos();
+                        persistencia.escribirArchivoBinario(cd[1],risk);
+
+                    }else{
+                        cout << "Extension de archivo no valida"<< endl;
+                    }
+                }
             }
             else if (cd[0] == "inicializar") {
                 if(!inicializado){
-                    if(persistencia.leerArchivoTxt(cd[1])){
+                    if(verificarArchivo(cd[1],extensionTxt)){
+                        if(persistencia.leerArchivoTxt(cd[1])){
+                            cout << "Inicializacion del juego con archivo '" << cd[1] << "' correcta"<< endl;
+                            risk.cargarCartas(archivo_cartas);
+                            risk.inicializarTablero();
+                            risk.llenarContinentes();
+                            risk.cargarConexiones(archivo_conexiones);
+                            persistencia.recuperarPartidaConTxt(cd[1],risk);
+                            risk.mostrarInicializacion();
+                            inicializado = true;
+                            persistencia.setSimbolos();
+                        }else{
+                            cout << "Archivo vacio o incompleto\n";
+                        }
+                    }else if(verificarArchivo(cd[1],extensionBin)){
                         cout << "Inicializacion del juego con archivo '" << cd[1] << "' correcta"<< endl;
-                        risk.cargarCartas(archivo_cartas);
-                        risk.inicializarTablero();
-                        risk.llenarContinentes();
-                        risk.cargarConexiones(archivo_conexiones);
-                        persistencia.recuperarPartidaConTxt(cd[1],risk);
-                        risk.mostrarInicializacion();
-                        inicializado = true;
                     }else{
-                        cout << "Archivo vacio o incompleto\n";
+                        cout << "Extension de archivo no valida"<< endl;
                     }
+
                 }else{
                     cout << "Juego en curso" << endl;
                 }

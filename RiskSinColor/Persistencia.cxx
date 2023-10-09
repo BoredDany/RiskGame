@@ -1,5 +1,4 @@
 #include "Persistencia.h"
-#include "Simbolo.h"
 #include "ArbolHUFF.h"
 #include "Partida.h"
 #include "Carta.h"
@@ -10,6 +9,10 @@
 #include <sstream>
 #include <fstream>
 #include <vector>
+#include <map>
+#include <algorithm>
+#include <cstdint>
+#include <utility>
 
 //constructores
 // --------------------------------------------------------------------
@@ -19,10 +22,10 @@ Persistencia::Persistencia(){
 
 //getters
 // --------------------------------------------------------------------
-std::vector<Simbolo> Persistencia::getSimbolos(){
+std::vector<std::pair<int8_t, int64_t>> Persistencia::getSimbolos(){
     return this->simbolos;
 }
-std::vector<int> Persistencia::getCodigo(){
+std::vector<int64_t> Persistencia::getCodigo(){
     return this->codigo;
 }
 std::string Persistencia::getInfo(){
@@ -34,20 +37,83 @@ ArbolHUFF Persistencia::getArbol(){
 
 //setters
 // --------------------------------------------------------------------
-void Persistencia::aggSimbolo(Simbolo simboloNuevo){
+void Persistencia::aggSimbolo(std::pair<int8_t, int64_t> simboloNuevo){
     (this->simbolos).push_back(simboloNuevo);
 }
-void Persistencia::setSimbolos(std::string info){
-
-}
-void Persistencia::aggCodigo(int codigoNuevo){
+void Persistencia::aggCodigo(int64_t codigoNuevo){
     (this->codigo).push_back(codigoNuevo);
 }
 void Persistencia::aggInfo(std::string caracterNuevo){
     (this->info).append(caracterNuevo);
 }
+
+void Persistencia::setInfo(Partida& partida){
+    int cantPaises;
+    for(Jugador j : partida.get_jugadores()){
+        //datos del jugador
+        (this->info).append(std::to_string(j.getId()));
+        (this->info).append(",");
+        (this->info).append(j.getAlias());
+        (this->info).append(",");
+        (this->info).append(j.getColor());
+        (this->info).append(",");
+        (this->info).append(std::to_string(j.getUnidades()));
+        (this->info).append(",");
+        (this->info).append(std::to_string(j.getCartas().size()));
+        (this->info).append(",");
+        //cartas del jugador
+        for(Carta c : j.getCartas()){
+            (this->info).append(std::to_string(c.getId()));
+            (this->info).append(",");
+        }
+
+        cantPaises = partida.calcularPaises(j.getId());
+
+        (this->info).append(std::to_string(cantPaises));
+
+        //paises ocupados por el jugador
+        for(Continente c : partida.get_tablero()){
+            for(Pais p : c.get_paises()){
+                if(p.get_id_jugador() == j.getId()){
+                    (this->info).append(",");
+                    (this->info).append(std::to_string(p.get_id()));
+                    (this->info).append("-");
+                    (this->info).append(std::to_string(p.get_unidades()));
+                }
+            }
+        }
+
+        (this->info).append(";");
+    }
+}
+
 void Persistencia::setArbol(ArbolHUFF arbol){
     this->arbol = arbol;
+}
+void Persistencia::setSimbolos() {
+    std::map<int8_t, int64_t> frecuencias;
+    std::vector<std::pair<int8_t, int64_t>>::iterator itV;
+    std::map<int8_t, int64_t>::iterator itM;
+
+    for (char c : this->info) {
+        frecuencias[c]++;
+    }
+
+    for (itM = frecuencias.begin() ; itM != frecuencias.end() ; itM++) {
+        std::pair<int8_t, int64_t> par (itM->first, itM->second);
+        (this->simbolos).push_back(par);
+    }
+
+    std::sort(this->simbolos.begin(), this->simbolos.end(), [](std::pair<int8_t, int64_t> a, std::pair<int8_t, int64_t> b) {
+        return a.second < b.second;
+    });
+
+/*
+    for(itV = this->simbolos.begin() ; itV != this->simbolos.end() ; itV++){
+        std::cout << "Letra: '"<< itV->first << "' - Frecuencia: " << itV->second << std::endl;
+    }*/
+
+
 }
 
 //operaciones
@@ -56,6 +122,8 @@ void Persistencia::escribirArchivoTxt(std::string nameFile, Partida& partida){
     //ID,nombre,color,unidades,numCartas,carta,numPaises,pais-unidades;
 
     std::ofstream outputfile(nameFile);
+    int cantPaises;
+
     if(outputfile.is_open()){
         for(Jugador j : partida.get_jugadores()){
             //datos del jugador
@@ -69,7 +137,7 @@ void Persistencia::escribirArchivoTxt(std::string nameFile, Partida& partida){
                 outputfile << c.getId() << ",";
             }
 
-            int cantPaises = partida.calcularPaises(j.getId());
+            cantPaises = partida.calcularPaises(j.getId());
 
             outputfile << cantPaises;
 
@@ -90,13 +158,44 @@ void Persistencia::escribirArchivoTxt(std::string nameFile, Partida& partida){
     outputfile.close();
 }
 
+void Persistencia::escribirArchivoBinario(std::string nameFile, Partida& partida){
+    //n c1 f1 · · · cn fn w binary_code
+    //n = 2 bytes : # caractereres diferentes en el archivo
+    //c = 1 byte : carcater
+    //f = 8 bytes : frecuencia
+    //w = 8 bytes : cantidad total de caracteres del archivo
+    //bynary_code : secuencia de 1s y 0s
+
+    std::vector<std::pair<int8_t, int64_t>>::iterator itV;
+    std::map<int8_t, int64_t>::iterator itM;
+
+    int16_t n = static_cast<int16_t>(this->simbolos.size());
+    std::cout << "CANTIDAD DE SIMBOLOS DIFERENTES: " << n << std::endl;
+
+    int8_t c;
+    int64_t f;
+
+    for(itV = this->simbolos.begin() ; itV != this->simbolos.end() ; itV++){
+        c = itV->first;
+        f = itV->second;
+        std::cout << "Letra: '"<< c << "' - Frecuencia: " << f << std::endl;
+    }
+
+    int64_t w = static_cast<int16_t>(this->info.length());
+    std::cout << "CANTIDAD DE SIMBOLOS TOTAL: " << w << std::endl;
+
+    this->arbol.armarArbol(this->simbolos);
+    std::cout << "ARBOL:" << std::endl;
+    this->arbol.nivelOrden();
+}
+
 bool Persistencia::leerArchivoTxt(std::string nameFile){
     std::string line;
     std::stringstream str;
     std::ifstream inputfile (nameFile);
     if(inputfile.is_open()){
         while (getline(inputfile, line)){
-            this->aggInfo(line);
+            this->info.append(line);
         }
     }else{
         return false;
@@ -104,6 +203,10 @@ bool Persistencia::leerArchivoTxt(std::string nameFile){
     return true;
 }
 void Persistencia::crearArbol(){
+
+}
+
+bool Persistencia::leerArchivoBin(std::string nameFile){
 
 }
 
