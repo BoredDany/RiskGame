@@ -193,10 +193,7 @@ int main() {
                     if(verificarArchivo(cd[1],extensionBin)){
                         cout << "Guardar en archivo binario '" << cd[1] << "' :recibido"<< endl;
                         cout << "Comando correcto"<< endl;
-
                         persistencia.setInfo(risk);
-                        cout << "INFO-------------------------" << endl;
-                        cout << persistencia.getInfo() << endl;
                         persistencia.setSimbolos();
                         persistencia.escribirArchivoBinario(cd[1],risk);
 
@@ -223,6 +220,7 @@ int main() {
                         }
                     }else if(verificarArchivo(cd[1],extensionBin)){
                         cout << "Inicializacion del juego con archivo '" << cd[1] << "' correcta"<< endl;
+                        persistencia.leerArchivoBin(cd[1]);
                     }else{
                         cout << "Extension de archivo no valida"<< endl;
                     }

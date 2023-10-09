@@ -160,33 +160,37 @@ void Persistencia::escribirArchivoTxt(std::string nameFile, Partida& partida){
 
 void Persistencia::escribirArchivoBinario(std::string nameFile, Partida& partida){
     //n c1 f1 · · · cn fn w binary_code
-    //n = 2 bytes : # caractereres diferentes en el archivo
-    //c = 1 byte : carcater
-    //f = 8 bytes : frecuencia
-    //w = 8 bytes : cantidad total de caracteres del archivo
-    //bynary_code : secuencia de 1s y 0s
-
     std::vector<std::pair<int8_t, int64_t>>::iterator itV;
     std::map<int8_t, int64_t>::iterator itM;
+    std::ofstream file(nameFile, std::ios::binary);
 
-    int16_t n = static_cast<int16_t>(this->simbolos.size());
-    std::cout << "CANTIDAD DE SIMBOLOS DIFERENTES: " << n << std::endl;
+    if(file.is_open()){
+        //n = 2 bytes : # caractereres diferentes en el archivo
+        int16_t n = static_cast<int16_t>(this->simbolos.size());
+        file.write(reinterpret_cast<char*>(&n), sizeof(n));
 
-    int8_t c;
-    int64_t f;
+        for(itV = this->simbolos.begin() ; itV != this->simbolos.end() ; itV++){
+            int8_t c = itV->first;
+            int64_t f = itV->second;
+            //c = 1 byte : carcater
+            file.write(reinterpret_cast<char*>(&c), sizeof(c));
+            //f = 8 bytes : frecuencia
+            file.write(reinterpret_cast<char*>(&f), sizeof(f));
+        }
 
-    for(itV = this->simbolos.begin() ; itV != this->simbolos.end() ; itV++){
-        c = itV->first;
-        f = itV->second;
-        std::cout << "Letra: '"<< c << "' - Frecuencia: " << f << std::endl;
+        //w = 8 bytes : cantidad total de caracteres del archivo
+        int64_t w = static_cast<int16_t>(this->info.length());
+        file.write(reinterpret_cast<char*>(&w), sizeof(w));
+
+        //bynary_code : secuencia de 1s y 0s
+
+        this->info = "";
+
+    }else{
+        std::cout << "No se creo archivo binario";
     }
-
-    int64_t w = static_cast<int16_t>(this->info.length());
-    std::cout << "CANTIDAD DE SIMBOLOS TOTAL: " << w << std::endl;
-
-    this->arbol.armarArbol(this->simbolos);
-    std::cout << "ARBOL:" << std::endl;
-    this->arbol.nivelOrden();
+    file.close();
+    //this->arbol.armarArbol(this->simbolos);
 }
 
 bool Persistencia::leerArchivoTxt(std::string nameFile){
@@ -202,12 +206,42 @@ bool Persistencia::leerArchivoTxt(std::string nameFile){
     }
     return true;
 }
-void Persistencia::crearArbol(){
-
-}
 
 bool Persistencia::leerArchivoBin(std::string nameFile){
+    std::ifstream file(nameFile, std::ios::binary);
 
+    if(file.is_open()){
+        //n = 2 bytes : # caractereres diferentes en el archivo
+        int16_t n;
+        file.read(reinterpret_cast<char*>(&n), sizeof(n));
+
+        for(int i = 0 ; i < n ; i++){
+            int8_t c;
+            int64_t f;
+            //c = 1 byte : carcater
+            file.read(reinterpret_cast<char*>(&c), sizeof(c));
+            //f = 8 bytes : frecuencia
+            file.read(reinterpret_cast<char*>(&f), sizeof(f));
+            std::pair<int8_t, int64_t> simbolo (c,f);
+            this->aggSimbolo(simbolo);
+        }
+
+        //w = 8 bytes : cantidad total de caracteres del archivo
+        int64_t w = static_cast<int16_t>(this->info.length());
+        file.read(reinterpret_cast<char*>(&w), sizeof(w));
+
+        std::cout << "N: " << n << std::endl;
+        std::cout << "SIMBOLOS" << std::endl;
+        for(std::pair<int8_t, int64_t> s : this->simbolos){
+            std::cout << "Letra: " << s.first << " - Frecuencia: " << s.second << std::endl;
+        }
+        std::cout << "W: " << w << std::endl;
+
+    }else{
+        return false;
+    }
+    file.close();
+    return true;
 }
 
 void Persistencia::recuperarPartidaConTxt(std::string nameFile, Partida& partida){
@@ -269,5 +303,6 @@ void Persistencia::recuperarPartidaConTxt(std::string nameFile, Partida& partida
             partida.aggJugador(j);
 
         }
+        this->info = "";
     }
 }

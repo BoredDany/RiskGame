@@ -33,7 +33,6 @@ public:
     void escribirArchivoBinario(std::string nameFile, Partida& partida);
     bool leerArchivoTxt(std::string nameFile);
     bool leerArchivoBin(std::string nameFile);
-    void crearArbol();
     void recuperarPartidaConTxt(std::string nameFile, Partida& partida);
 
 };
