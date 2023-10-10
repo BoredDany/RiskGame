@@ -5,6 +5,7 @@
 #include "Partida.h"
 #include <vector>
 #include <string>
+#include <stack>
 
 class Persistencia{
 private:

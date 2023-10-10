@@ -6,6 +6,7 @@
 #include "Continente.h"
 #include <cstring>
 #include <string>
+#include <stack>
 #include <sstream>
 #include <fstream>
 #include <vector>
@@ -95,7 +96,7 @@ void Persistencia::setSimbolos() {
     std::map<int8_t, int64_t> frecuencias;
     std::vector<std::pair<int8_t, int64_t>>::iterator itV;
     std::map<int8_t, int64_t>::iterator itM;
-
+    this->simbolos.clear();
     for (char c : this->info) {
         frecuencias[c]++;
     }
@@ -165,6 +166,7 @@ void Persistencia::escribirArchivoBinario(std::string nameFile, Partida& partida
     std::map<int8_t, int64_t>::iterator itM;
     std::ofstream file(nameFile, std::ios::binary);
 
+    this->arbol.setRaiz(nullptr) ;
     if(file.is_open()){
         //n = 2 bytes : # caractereres diferentes en el archivo
         int16_t n = static_cast<int16_t>(this->simbolos.size());
@@ -192,8 +194,8 @@ void Persistencia::escribirArchivoBinario(std::string nameFile, Partida& partida
         }*/
 
         std::pair<int8_t, int64_t> simbolo = buscarSimbolo(this->info[0]);
-        this->arbol.codificar(simbolo, this->codigo);
-
+        std::stack<int64_t> st;
+        this->arbol.codificar(simbolo, st, this->codigo);
         for(int64_t c : this->codigo){
             std::cout << c << " ";
         }

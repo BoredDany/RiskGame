@@ -3,6 +3,7 @@
 #include <utility>
 #include <cstdint>
 #include <string>
+#include <stack>
 
 //constructores
 //--------------------------------------------------------------------

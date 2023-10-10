@@ -5,6 +5,7 @@
 #include <cstdint>
 #include <vector>
 #include <deque>
+#include <stack>
 #include <unordered_map>
 #include <string>
 #include <algorithm>
@@ -25,7 +26,16 @@ ArbolHUFF::ArbolHUFF(std::pair<int8_t, int64_t>& raiz){
 // --------------------------------------------------------------------
 ArbolHUFF::~ArbolHUFF(){
     this->raiz = nullptr;
-};
+}
+void ArbolHUFF::liberarArbol(NodoHUFF * raiz){
+    if(raiz == nullptr){
+        return
+    }
+    liberarArbol(raiz->getHijoI());
+    liberarArbol(raiz->getHijoD());
+
+    delete raiz;
+}
 
 //getters
 // --------------------------------------------------------------------
@@ -44,14 +54,19 @@ void ArbolHUFF::setRaiz(NodoHUFF * raiz){
 // --------------------------------------------------------------------
 
 // Codificar un mensaje utilizando un árbol de Huffman
-void ArbolHUFF::codificar(std::pair<int8_t, int64_t> simbolo, std::vector<int64_t>& codigo) {
-    NodoHUFF * nodo = this->raiz;
-    int64_t izq = 0;
-    int64_t der = 1;
+void ArbolHUFF::codificar(std::pair<int8_t, int64_t> simbolo, std::stack<int64_t>& st, std::vector<int64_t>& codigo) {
+    if(this->raiz == nullptr){
+        return;
+    }else{
+        int64_t izq = 0, der = 1;
 
+    }
 
 }
 
+void codificarR(){
+
+}
 
 void ArbolHUFF::addToDeque(std::deque< NodoHUFF * >& simbolos, NodoHUFF * nuevo){
     std::deque< NodoHUFF * >::iterator it = simbolos.begin();
@@ -85,6 +100,7 @@ void ArbolHUFF::armarArbol(std::vector<std::pair<int8_t, int64_t>> simbolos) {
         intm->setHijoD(der);
 
         addToDeque(simbolosD, intm);
+
     }
 
     this->raiz = simbolosD.front();
