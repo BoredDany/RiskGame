@@ -89,8 +89,14 @@ void Persistencia::setInfo(Partida& partida){
     }
 }
 
-void Persistencia::setArbol(ArbolHUFF arbol){
-    this->arbol = arbol;
+void Persistencia::setArbol(){
+    this->arbol = ArbolHUFF();
+    this->arbol.armarArbol(this->simbolos);
+}
+
+void Persistencia::borrarArbol(){
+    this->arbol.liberarArbol(this->arbol.getRaiz());
+    this->arbol.setRaiz(nullptr);
 }
 
 void Persistencia::setSimbolos() {
@@ -177,7 +183,7 @@ void Persistencia::escribirArchivoBinario(std::string nameFile, Partida& partida
             file.write(reinterpret_cast<char*>(&f), sizeof(f));
         }
 
-        this->arbol.armarArbol(this->simbolos);
+        this->setArbol();
         std::stack<int64_t> st;
         for(int i = 0 ; i < this->info.length() ; i++){
             std::pair<int8_t, int64_t> simbolo = buscarSimbolo(this->info[i]);
@@ -193,7 +199,7 @@ void Persistencia::escribirArchivoBinario(std::string nameFile, Partida& partida
             file.write(reinterpret_cast<char*>(&cod), sizeof(cod));
         }
 
-        this->arbol.liberarArbol(this->arbol.getRaiz());
+        this->borrarArbol();
 
     }else{
         std::cout << "No se creo archivo binario";
@@ -254,9 +260,10 @@ bool Persistencia::leerArchivoBin(std::string nameFile){
             this->codigo.push_back(code);
         }
 
-        this->arbol.armarArbol(this->simbolos);
+        this->setArbol();
         this->arbol.decodificar(this->codigo, this->info);
-        //this->arbol.liberarArbol(this->arbol.getRaiz());
+
+        this->borrarArbol();
 
     }else{
         return false;

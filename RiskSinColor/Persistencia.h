@@ -26,7 +26,8 @@ public:
     void aggCodigo(int64_t codigoNuevo);
     void aggInfo(std::string caracterNuevo);
     void setInfo(Partida& partida);
-    void setArbol(ArbolHUFF arbol);
+    void setArbol();
+    void borrarArbol();
     void setSimbolos();
     void ordenarSimbolos();
     //operaciones

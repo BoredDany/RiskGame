@@ -31,10 +31,9 @@ void ArbolHUFF::liberarArbol(NodoHUFF * raiz){
     if(raiz == nullptr){
         return;
     }
+    delete raiz;
     liberarArbol(raiz->getHijoI());
     liberarArbol(raiz->getHijoD());
-
-    delete raiz;
 }
 
 //getters
@@ -70,10 +69,6 @@ void ArbolHUFF::codificar(std::pair<int8_t, int64_t> simbolo, std::stack<int64_t
             rutaCorrecta.pop();
         }
     }
-
-}
-
-bool codificarR(){
 
 }
 
