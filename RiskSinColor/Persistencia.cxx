@@ -161,7 +161,8 @@ void Persistencia::escribirArchivoBinario(std::string nameFile, Partida& partida
     std::map<int8_t, int64_t>::iterator itM;
     std::ofstream file(nameFile, std::ios::binary);
 
-    this->arbol.setRaiz(nullptr) ;
+    this->codigo.clear();
+
     if(file.is_open()){
         //n = 2 bytes : # caractereres diferentes en el archivo
         int16_t n = static_cast<int16_t>(this->simbolos.size());
@@ -176,19 +177,18 @@ void Persistencia::escribirArchivoBinario(std::string nameFile, Partida& partida
             file.write(reinterpret_cast<char*>(&f), sizeof(f));
         }
 
-        //w = 8 bytes : cantidad total de caracteres del archivo
-        int64_t w = static_cast<int16_t>(this->info.length());
-        file.write(reinterpret_cast<char*>(&w), sizeof(w));
-
-        //bynary_code : secuencia de 1s y 0s
         this->arbol.armarArbol(this->simbolos);
         std::stack<int64_t> st;
-
         for(int i = 0 ; i < this->info.length() ; i++){
             std::pair<int8_t, int64_t> simbolo = buscarSimbolo(this->info[i]);
             this->arbol.codificar(simbolo, st, this->codigo);
         }
 
+        //w = 8 bytes : cantidad total de caracteres del archivo
+        int64_t w = static_cast<int16_t>(this->codigo.size());
+        file.write(reinterpret_cast<char*>(&w), sizeof(w));
+
+        //bynary_code : secuencia de 1s y 0s
         for(int64_t cod : this->codigo){
             file.write(reinterpret_cast<char*>(&cod), sizeof(cod));
         }
@@ -243,22 +243,20 @@ bool Persistencia::leerArchivoBin(std::string nameFile){
         }
 
         //w = 8 bytes : cantidad total de caracteres del archivo
-        int64_t w = static_cast<int16_t>(this->info.length());
+        int64_t w;
+        w = static_cast<int16_t>(this->info.length());
         file.read(reinterpret_cast<char*>(&w), sizeof(w));
 
-        std::cout << "N: " << n << std::endl;
-        std::cout << "SIMBOLOS" << std::endl;
-        for(std::pair<int8_t, int64_t> s : this->simbolos){
-            std::cout << "Letra: " << s.first << " - Frecuencia: " << s.second << std::endl;
-        }
-        std::cout << "W: " << w << std::endl;
-        std::cout << "CODIGO" << std::endl;
-        for(int i = 0 ; i < w ; i++){
+        for(int j = 0 ; j < w ; j++){
             int64_t code;
             file.read(reinterpret_cast<char*>(&code), sizeof(code));
-            std::cout << code;
+            //std::cout << code;
+            this->codigo.push_back(code);
         }
 
+        this->arbol.armarArbol(this->simbolos);
+        this->arbol.decodificar(this->codigo, this->info);
+        //this->arbol.liberarArbol(this->arbol.getRaiz());
 
     }else{
         return false;

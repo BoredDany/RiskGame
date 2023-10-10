@@ -219,7 +219,18 @@ int main() {
                         }
                     }else if(verificarArchivo(cd[1],extensionBin)){
                         cout << "Inicializacion del juego con archivo '" << cd[1] << "' correcta"<< endl;
-                        persistencia.leerArchivoBin(cd[1]);
+                        if(persistencia.leerArchivoBin(cd[1])){
+                            risk.cargarCartas(archivo_cartas);
+                            risk.inicializarTablero();
+                            risk.llenarContinentes();
+                            risk.cargarConexiones(archivo_conexiones);
+                            persistencia.recuperarPartida(risk);
+                            risk.mostrarInicializacion();
+                            inicializado = true;
+                        }else{
+                            cout << "Archivo vacio o incompleto\n";
+                        }
+
                     }else{
                         cout << "Extension de archivo no valida"<< endl;
                     }
