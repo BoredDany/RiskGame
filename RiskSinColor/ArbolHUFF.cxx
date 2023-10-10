@@ -6,11 +6,8 @@
 #include <vector>
 #include <deque>
 #include <stack>
-#include <unordered_map>
 #include <string>
-#include <algorithm>
 #include <queue>
-#include <unordered_map>
 
 //constructores
 // --------------------------------------------------------------------

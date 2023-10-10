@@ -7,7 +7,8 @@
 #include <cstdint>
 #include <deque>
 #include <stack>
-#include <unordered_map>
+#include <string>
+#include <queue>
 
 class ArbolHUFF{
 private:
