@@ -92,6 +92,7 @@ void Persistencia::setInfo(Partida& partida){
 void Persistencia::setArbol(ArbolHUFF arbol){
     this->arbol = arbol;
 }
+
 void Persistencia::setSimbolos() {
     std::map<int8_t, int64_t> frecuencias;
     std::vector<std::pair<int8_t, int64_t>>::iterator itV;
@@ -109,12 +110,6 @@ void Persistencia::setSimbolos() {
     std::sort(this->simbolos.begin(), this->simbolos.end(), [](std::pair<int8_t, int64_t> a, std::pair<int8_t, int64_t> b) {
         return a.second < b.second;
     });
-
-/*
-    for(itV = this->simbolos.begin() ; itV != this->simbolos.end() ; itV++){
-        std::cout << "Letra: '"<< itV->first << "' - Frecuencia: " << itV->second << std::endl;
-    }*/
-
 
 }
 
@@ -187,25 +182,23 @@ void Persistencia::escribirArchivoBinario(std::string nameFile, Partida& partida
 
         //bynary_code : secuencia de 1s y 0s
         this->arbol.armarArbol(this->simbolos);
-
-        /*for(int i = 0 ; i < this->info.length() ; i++){
-            std::pair<int8_t, int64_t> simbolo = buscarSimbolo(this->info[i]);
-            this->arbol.codificar(simbolo, this->codigo);
-        }*/
-
-        std::pair<int8_t, int64_t> simbolo = buscarSimbolo(this->info[0]);
         std::stack<int64_t> st;
-        this->arbol.codificar(simbolo, st, this->codigo);
-        for(int64_t c : this->codigo){
-            std::cout << c << " ";
+
+        for(int i = 0 ; i < this->info.length() ; i++){
+            std::pair<int8_t, int64_t> simbolo = buscarSimbolo(this->info[i]);
+            this->arbol.codificar(simbolo, st, this->codigo);
         }
+
+        for(int64_t cod : this->codigo){
+            file.write(reinterpret_cast<char*>(&cod), sizeof(cod));
+        }
+
+        this->arbol.liberarArbol(this->arbol.getRaiz());
 
     }else{
         std::cout << "No se creo archivo binario";
     }
     file.close();
-
-
 }
 
 std::pair<int8_t, int64_t> Persistencia::buscarSimbolo(char letra){
@@ -259,6 +252,13 @@ bool Persistencia::leerArchivoBin(std::string nameFile){
             std::cout << "Letra: " << s.first << " - Frecuencia: " << s.second << std::endl;
         }
         std::cout << "W: " << w << std::endl;
+        std::cout << "CODIGO" << std::endl;
+        for(int i = 0 ; i < w ; i++){
+            int64_t code;
+            file.read(reinterpret_cast<char*>(&code), sizeof(code));
+            std::cout << code;
+        }
+
 
     }else{
         return false;
@@ -267,7 +267,7 @@ bool Persistencia::leerArchivoBin(std::string nameFile){
     return true;
 }
 
-void Persistencia::recuperarPartida(std::string nameFile, Partida& partida){
+void Persistencia::recuperarPartida(Partida& partida){
     //formato
     //ID,nombre,color,unidades,numCartas,carta,numPaises,pais-unidades;
 

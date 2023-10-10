@@ -26,6 +26,7 @@ public:
     void setHijoD(NodoHUFF * hijoD);
     //operaciones
     bool hoja();
+    bool ruta(bool raiz, std::pair<int8_t, int64_t> simbolo, std::stack<int64_t>& st, NodoHUFF * nodo, int64_t num);
 };
 
 #endif //RISKSINCOLOR_NODOHUFF_H

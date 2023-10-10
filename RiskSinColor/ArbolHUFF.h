@@ -27,11 +27,9 @@ public:
     void armarArbol(std::vector<std::pair<int8_t, int64_t>> simbolos);
     void addToDeque(std::deque< NodoHUFF * >& simbolos, NodoHUFF * nuevo);
     void codificar(std::pair<int8_t, int64_t> simbolo, std::stack<int64_t>& st, std::vector<int64_t>& codigo);
-    void construirCodigoHuffman(NodoHUFF* nodo, std::string codigo, std::unordered_map<int8_t, std::string>& CodigoHuffman);
-    void decodificar(std::vector<int64_t> codigo, std::vector<std::pair<int8_t, int64_t>>& simbolos);
+    void decodificar(std::vector<int64_t> codigo, std::string& info);
     //recorridos
     void nivelOrden();
-
 };
 
 #endif //RISKSINCOLOR_ARBOLHUFF_H

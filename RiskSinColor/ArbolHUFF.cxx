@@ -29,7 +29,7 @@ ArbolHUFF::~ArbolHUFF(){
 }
 void ArbolHUFF::liberarArbol(NodoHUFF * raiz){
     if(raiz == nullptr){
-        return
+        return;
     }
     liberarArbol(raiz->getHijoI());
     liberarArbol(raiz->getHijoD());
@@ -58,13 +58,22 @@ void ArbolHUFF::codificar(std::pair<int8_t, int64_t> simbolo, std::stack<int64_t
     if(this->raiz == nullptr){
         return;
     }else{
-        int64_t izq = 0, der = 1;
-
+        int64_t i = -1;
+        this->raiz->ruta(true, simbolo, st, this->raiz, i);
+        std::stack<int64_t> rutaCorrecta;
+        while(!st.empty()){
+            rutaCorrecta.push(st.top());
+            st.pop();
+        }
+        while(!rutaCorrecta.empty()){
+            codigo.push_back(rutaCorrecta.top());
+            rutaCorrecta.pop();
+        }
     }
 
 }
 
-void codificarR(){
+bool codificarR(){
 
 }
 
@@ -100,35 +109,18 @@ void ArbolHUFF::armarArbol(std::vector<std::pair<int8_t, int64_t>> simbolos) {
         intm->setHijoD(der);
 
         addToDeque(simbolosD, intm);
-
     }
-
     this->raiz = simbolosD.front();
 }
 
-// Construir el código de Huffman
-void ArbolHUFF::construirCodigoHuffman(NodoHUFF* nodo, std::string codigo, std::unordered_map<int8_t, std::string>& CodigoHuffman) {
-    if (!nodo->getHijoI() && !nodo->getHijoD()) {
-        CodigoHuffman[nodo->getSimbolo().first] = codigo;
-    }
-
-    if (nodo->getHijoI()) {
-        construirCodigoHuffman(nodo->getHijoI(), codigo + "0", CodigoHuffman);
-    }
-
-    if (nodo->getHijoD()) {
-        construirCodigoHuffman(nodo->getHijoD(), codigo + "1", CodigoHuffman);
-    }
-}
-
-
 // Decodificar un mensaje utilizando un árbol de Huffman
-void ArbolHUFF::decodificar(std::vector<int64_t> codigo, std::vector<std::pair<int8_t, int64_t>>& simbolos) {
+void ArbolHUFF::decodificar(std::vector<int64_t> codigo, std::string& info) {
     if (raiz == nullptr || codigo.empty()) {
         return;
     }
 
-    NodoHUFF* nodoActual = raiz;
+    NodoHUFF* nodoActual = this->raiz;
+
     for (int64_t bit : codigo) {
         if (bit == 0 && nodoActual->getHijoI()) {
             nodoActual = nodoActual->getHijoI();
@@ -137,8 +129,8 @@ void ArbolHUFF::decodificar(std::vector<int64_t> codigo, std::vector<std::pair<i
         }
 
         if (!nodoActual->getHijoI() && !nodoActual->getHijoD()) {
-            simbolos.push_back(nodoActual->getSimbolo());
-            nodoActual = raiz;  // Reiniciar desde la raíz
+            info.push_back(static_cast<char>(nodoActual->getSimbolo().first));
+            nodoActual = this->raiz;  // Reiniciar desde la raíz
         }
     }
 }

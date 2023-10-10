@@ -211,7 +211,7 @@ int main() {
                             risk.inicializarTablero();
                             risk.llenarContinentes();
                             risk.cargarConexiones(archivo_conexiones);
-                            persistencia.recuperarPartida(cd[1],risk);
+                            persistencia.recuperarPartida(risk);
                             risk.mostrarInicializacion();
                             inicializado = true;
                         }else{

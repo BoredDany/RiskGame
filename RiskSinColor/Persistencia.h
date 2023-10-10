@@ -34,7 +34,7 @@ public:
     void escribirArchivoBinario(std::string nameFile, Partida& partida);
     bool leerArchivoTxt(std::string nameFile);
     bool leerArchivoBin(std::string nameFile);
-    void recuperarPartida(std::string nameFile, Partida& partida);
+    void recuperarPartida(Partida& partida);
 
     std::pair<int8_t, int64_t>buscarSimbolo(char letra);
 

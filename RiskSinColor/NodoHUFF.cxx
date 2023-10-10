@@ -63,3 +63,23 @@ void NodoHUFF::setHijoD(NodoHUFF * hijoD){
 bool NodoHUFF::hoja() {
     return this->hijoD == nullptr && this->hijoI == nullptr;
 }
+
+bool NodoHUFF::ruta(bool raiz, std::pair<int8_t, int64_t> simbolo, std::stack<int64_t>& st, NodoHUFF * nodo, int64_t num){
+    int64_t izq = 0, der = 1;
+    if(nodo == nullptr){
+        return false;
+    }
+    if(!raiz){
+        st.push(num);
+    }
+    if(nodo->simbolo.first == simbolo.first){
+        return true;
+    }
+    if(ruta(false, simbolo, st, nodo->hijoI, izq) || ruta(false, simbolo, st, nodo->hijoD, der)){
+        return true;
+    }
+    if(!raiz){
+        st.pop();
+    }
+    return false;
+}
