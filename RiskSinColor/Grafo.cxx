@@ -2,8 +2,8 @@
 // Created by estudiante on 17/11/2023.
 //
 
-
 #include "Grafo.h"
+#include "PaisG.h"
 #include <vector>
 #include <list>
 #include <utility>
@@ -16,8 +16,7 @@
 
 //constructors
 
-template <class T, class C>
-Graph<T, C>::Graph() {
+Graph::Graph() {
 
 }
 
@@ -25,13 +24,11 @@ Graph<T, C>::Graph() {
 
 //getters
 
-template < class T, class C >
-std::vector < T > Graph<T, C>::getVertices(){
+std::vector < Pais > Graph::getVertices(){
     return this->vertices;
 }
 
-template < class T, class C >
-std::vector < std::list < std::pair < int, C > > > Graph<T, C>::getEdges(){
+std::vector < std::list < std::pair < int, int > > > Graph::getEdges(){
     return this->edges;
 }
 
@@ -39,13 +36,11 @@ std::vector < std::list < std::pair < int, C > > > Graph<T, C>::getEdges(){
 
 //setters
 
-template < class T, class C >
-void Graph<T, C>::setVertices(std::vector < T >& vertices){
+void Graph::setVertices(std::vector < Pais >& vertices){
     this->vertices = vertices;
 }
 
-template < class T, class C >
-void Graph<T, C>::setEdges(std::vector < std::list < std::pair < int, C > > >& edges){
+void Graph::setEdges(std::vector < std::list < std::pair < int, int > > >& edges){
     this.edges = edges;
 }
 
@@ -53,24 +48,22 @@ void Graph<T, C>::setEdges(std::vector < std::list < std::pair < int, C > > >& e
 
 //inserting
 
-template < class T, class C >
-bool Graph<T, C>::addVertex(T& vertex){
+bool Graph::addVertex(Pais& vertex){
     int vertexFound = searchVertice(vertex);
     if(vertexFound == -1){
         this->vertices.push_back(vertex);
-        this->edges.push_back(std::list<std::pair<int, C>>());
+        this->edges.push_back(std::list<std::pair<int, int>>());
         return true;
     }
     return false;
 }
 
-template < class T, class C >
-bool Graph<T, C>::addEdge(T& origin, T& destination, C cost){
+bool Graph::addEdge(Pais& origin, Pais& destination, int cost){
     int destinationIndex = searchVertice(destination);
     int originIndex = searchVertice(origin);
 
     if(!searchEdge(origin, destination) && originIndex != -1 && destinationIndex != -1){
-        std::pair < int, C > newEdge (destinationIndex, cost);
+        std::pair < int, int > newEdge (destinationIndex, cost);
         this->edges[originIndex].push_back(newEdge);
         return true;
     }
@@ -81,8 +74,7 @@ bool Graph<T, C>::addEdge(T& origin, T& destination, C cost){
 
 //searching
 
-template < class T, class C >
-int Graph<T, C>::searchVertice(T& vertex){
+int Graph::searchVertice(Pais& vertex){
     int vertexFound = -1;
     for(int i = 0 ; i < this->vertices.size() ; i++){
         if(this->vertices[i] == vertex){
@@ -93,9 +85,8 @@ int Graph<T, C>::searchVertice(T& vertex){
     return vertexFound;
 }
 
-template < class T, class C >
-bool Graph<T, C>::searchEdge(T& origin, T& destination){
-    typename  std::list < std::pair < int, C > >::iterator itL;
+bool Graph::searchEdge(Pais& origin, Pais& destination){
+    typename  std::list < std::pair < int, int > >::iterator itL;
     int destinationIndex = searchVertice(destination);
     int originIndex = searchVertice(origin);
 
@@ -113,13 +104,11 @@ bool Graph<T, C>::searchEdge(T& origin, T& destination){
 //----------------------------------------------------------------------------------------------
 //general info
 
-template < class T, class C >
-int Graph<T, C>::numVertices(){
+int Graph::numVertices(){
     return this->vertices.size();
 }
 
-template < class T, class C >
-int Graph<T, C>::numEdges(){
+int Graph::numEdges(){
     typename  std::list < std::pair < int, C > >::iterator itL;
     int numEdges = 0;
 
@@ -134,18 +123,14 @@ int Graph<T, C>::numEdges(){
 }
 
 //----------------------------------------------------------------------------------------------
-
 //tours
-
-template < class T, class C >
-void Graph<T, C>::plain(){
+void Graph::plain(){
     for(int i = 0 ; i < this->vertices.size() ; i++){
         std::cout << this->vertices[i] << " ; ";
     }
 }
 
-template < class T, class C >
-void Graph<T, C>::bfs(){
+void Graph::bfs(){
     std::vector<bool> visited(this->vertices.size(), false);
     std::queue<int> vertexQueue;
 
@@ -156,8 +141,7 @@ void Graph<T, C>::bfs(){
     }
 }
 
-template < class T, class C >
-void Graph<T, C>::doBFS(int startVertex, std::vector<bool>& visited, std::queue<int>& vertexQueue){
+void Graph::doBFS(int startVertex, std::vector<bool>& visited, std::queue<int>& vertexQueue){
     visited[startVertex] = true;
     vertexQueue.push(startVertex);
 
@@ -167,7 +151,7 @@ void Graph<T, C>::doBFS(int startVertex, std::vector<bool>& visited, std::queue<
 
         std::cout << this->vertices[currentVertex] << ", ";
 
-        typename  std::list < std::pair < int, C > >::iterator itL;
+        typename  std::list < std::pair < int, int > >::iterator itL;
         itL = this->edges[currentVertex].begin();
 
         for( ; itL != this->edges[currentVertex].end() ; itL++){
@@ -180,8 +164,7 @@ void Graph<T, C>::doBFS(int startVertex, std::vector<bool>& visited, std::queue<
     }
 }
 
-template < class T, class C >
-void Graph<T, C>::dfs(){
+void Graph::dfs(){
     std::vector<bool> visited(this->vertices.size(), false);
 
     for (int i = 0; i < this->vertices.size(); ++i) {
@@ -191,12 +174,11 @@ void Graph<T, C>::dfs(){
     }
 }
 
-template <class T, class C>
-void Graph<T, C>::doDFS(int currentVertex, std::vector<bool>& visited) {
+void Graph::doDFS(int currentVertex, std::vector<bool>& visited) {
     visited[currentVertex] = true;
     std::cout << this->vertices[currentVertex] << ", ";
 
-    typename  std::list < std::pair < int, C > >::iterator itL;
+    typename  std::list < std::pair < int, int > >::iterator itL;
     itL = this->edges[currentVertex].begin();
 
     for ( ; itL != this->edges[currentVertex].end(); itL++) {
@@ -207,13 +189,12 @@ void Graph<T, C>::doDFS(int currentVertex, std::vector<bool>& visited) {
     }
 }
 
-template < class T, class C >
-void Graph<T, C>::showEdges(){
-    typename  std::list < std::pair < int, C > >::iterator itL;
+void Graph::showEdges(){
+    typename  std::list < std::pair < int, int > >::iterator itL;
 
     for(int i = 0 ; i < this->edges.size() ; i++){
         std::cout << "\n" << this->vertices[i] << ": ";
-        std::list < std::pair < int, C > > auxEdges = this->edges[i];
+        std::list < std::pair < int, int > > auxEdges = this->edges[i];
         itL = auxEdges.begin();
         for(itL = auxEdges.begin() ; itL != auxEdges.end() ; itL++){
             std::cout << "(" << this->vertices[(*itL).first] << "," << (*itL).second << ") ";
@@ -224,3 +205,13 @@ void Graph<T, C>::showEdges(){
 }
 
 //----------------------------------------------------------------------------------------------
+
+void Graph::readVertices(std::string file){
+    for(){
+
+    }
+}
+
+void Graph::readConnections(std::string file){
+
+}

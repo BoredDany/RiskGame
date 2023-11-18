@@ -8,7 +8,7 @@
 #include <vector>
 #include <list>
 #include <utility>
-#include "Pais.h"
+#include "PaisG.h"
 
 class Grafo{
 private:
@@ -19,20 +19,20 @@ public:
     Graph();
 
     //getters
-    std::vector < T > getVertices();
-    std::vector < std::list < std::pair < int, C > > > getEdges();
+    std::vector < Pais > getVertices();
+    std::vector < std::list < std::pair < int, int > > > getEdges();
 
     //setters
-    void setVertices(std::vector < T >& vertices);
-    void setEdges(std::vector < std::list < std::pair < int, C > > >& edges);
+    void setVertices(std::vector < Pais >& vertices);
+    void setEdges(std::vector < std::list < std::pair < int, int > > >& edges);
 
     //inserting
-    bool addVertex(T& vertex);
-    bool addEdge(T& origin, T& destination, C cost);
+    bool addVertex(Pais& vertex);
+    bool addEdge(Pais& origin, T& destination, C cost);
 
     //searching
-    int searchVertice(T& vertex);
-    bool searchEdge(T& origin, T& destination);
+    int searchVertice(Pais& vertex);
+    bool searchEdge(Pais& origin, Pais& destination);
 
     //general info
     int numVertices();
@@ -45,6 +45,11 @@ public:
     void dfs();
     void doDFS(int currentVertex, std::vector<bool>& visited);
     void showEdges();
+
+    //algoritmos
+    void readVertices(std::string file);
+    void readConnections(std::string file);
+
 };
 
 #endif //RISKSINCOLOR_GRAFO_H
