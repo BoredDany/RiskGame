@@ -8,6 +8,7 @@
 #include "Continente.h"
 #include "Carta.h"
 #include "Jugador.h"
+#include "Grafo.h"
 #include<list>
 #include<vector>
 
@@ -17,6 +18,7 @@ private:
     std::vector<Jugador> jugadores;
     std::list<Carta> cartas;
     std::list<Continente> tablero;
+    Grafo grafo;
 public:
     //consrtructores
     Partida(int id);
@@ -24,6 +26,7 @@ public:
     std::vector<Jugador> get_jugadores();
     std::list<Carta> get_cartas();
     std::list<Continente> get_tablero();
+    Grafo get_grafo();
     //setters
     void set_id(int id);
 

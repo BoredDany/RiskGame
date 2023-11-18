@@ -5,7 +5,9 @@
 #ifndef RISKSINCOLOR_PAISG_H
 #define RISKSINCOLOR_PAISG_H
 
-class PaisG{
+#include <string>
+
+class PaisG {
 private:
     int id;
     std::string nombre;
@@ -14,7 +16,7 @@ private:
     int id_jugador;
 public:
     //constructores
-    Pais(int id, std::string nombre, std::string continente);
+    PaisG (int id, std::string nombre, std::string continente);
     //getters
     int get_id();
     std::string get_nombre();
@@ -24,6 +26,7 @@ public:
     //setters
     void set_unidades(int unidades);
     void set_id_jugador(int id_jugador);
+
 };
 
 #endif //RISKSINCOLOR_PAISG_H

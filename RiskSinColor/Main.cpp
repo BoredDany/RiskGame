@@ -242,6 +242,12 @@ int main() {
             }
             else if (cd[0] == "costo_conquista") {
                 cout << "Costo de la conquista " << cd[1] << " :recibido" << endl;
+                Grafo g;
+                risk.cargarCartas(archivo_cartas);
+                g.readVertices(risk.get_cartas());
+                g.readConnections(archivo_conexiones);
+                g.plain();
+                g.showEdges();
             }
             else {
                 cout << "Comando invalido" << endl;

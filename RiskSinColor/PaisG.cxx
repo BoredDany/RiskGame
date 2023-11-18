@@ -21,23 +21,23 @@ PaisG::PaisG(int id, std::string nombre,  std::string continente) {
 //getters
 //--------------------------------------------------------------------
 int PaisG::get_id() {
-    return id;
+    return this->id;
 }
 
 std::string PaisG::get_nombre() {
-    return nombre;
+    return this->nombre;
 }
 
 std::string PaisG::get_continente() {
-    return continente;
+    return this->continente;
 }
 
 int PaisG::get_unidades() {
-    return unidades;
+    return this->unidades;
 }
 
 int PaisG::get_id_jugador() {
-    return id_jugador;
+    return this->id_jugador;
 }
 
 //setters

@@ -8,35 +8,34 @@
 #include <vector>
 #include <list>
 #include <utility>
+#include <queue>
+#include <string>
 #include "PaisG.h"
+#include "Carta.h"
 
 class Grafo{
 private:
-    std::vector < Pais > paises;
+    std::vector < PaisG > paises;
     std::vector < std::list < std::pair < int, int > > > conexiones;
 public:
     //constructors
-    Graph();
+    Grafo();
 
     //getters
-    std::vector < Pais > getVertices();
+    std::vector < PaisG > getVertices();
     std::vector < std::list < std::pair < int, int > > > getEdges();
 
     //setters
-    void setVertices(std::vector < Pais >& vertices);
+    void setVertices(std::vector < PaisG >& vertices);
     void setEdges(std::vector < std::list < std::pair < int, int > > >& edges);
 
     //inserting
-    bool addVertex(Pais& vertex);
-    bool addEdge(Pais& origin, T& destination, C cost);
+    bool addVertex(PaisG& vertex);
+    bool addEdge(PaisG& origin, PaisG& destination, int cost);
 
     //searching
-    int searchVertice(Pais& vertex);
-    bool searchEdge(Pais& origin, Pais& destination);
-
-    //general info
-    int numVertices();
-    int numEdges();
+    int searchVertice(int vertex);
+    bool searchEdge(int origin, int destination);
 
     //tours
     void plain();
@@ -47,8 +46,8 @@ public:
     void showEdges();
 
     //algoritmos
-    void readVertices(std::string file);
-    void readConnections(std::string file);
+    void readVertices(std::list < Carta > cartas);
+    void readConnections(std::string archivo);
 
 };
 

@@ -19,13 +19,16 @@ Partida::Partida(int id){
 //getters
 //--------------------------------------------------------------------
 std::vector<Jugador> Partida::get_jugadores() {
-    return jugadores;
+    return this->jugadores;
 }
 std::list<Carta> Partida::get_cartas(){
-    return cartas;
+    return this->cartas;
 }
 std::list<Continente> Partida::get_tablero(){
-    return tablero;
+    return this->tablero;
+}
+Grafo Partida::get_grafo(){
+    return this->grafo;
 }
 
 //setters
@@ -57,7 +60,7 @@ void Partida::cargarCartas(std::string archivo_cartas){
             figura = word;
             getline(str,word,';');
             continente = word;
-            cartas.push_back(Carta (territorio,figura,continente,pais));
+            (this->cartas).push_back(Carta (territorio,figura,continente,pais));
         }
     }else{
         std::cout<<"Archivo no leido"<<std::endl;

@@ -4,6 +4,7 @@
 
 #include "Grafo.h"
 #include "PaisG.h"
+#include "Carta.h"
 #include <vector>
 #include <list>
 #include <utility>
@@ -12,59 +13,59 @@
 #include <climits>
 #include <limits>
 #include <set>
+#include <string>
 #include <algorithm>
+#include <fstream>
+#include <iostream>
+#include <sstream>
 
 //constructors
-
-Graph::Graph() {
+Grafo::Grafo() {
 
 }
 
 //----------------------------------------------------------------------------------------------
-
 //getters
 
-std::vector < Pais > Graph::getVertices(){
-    return this->vertices;
+std::vector < PaisG > Grafo::getVertices(){
+    return this->paises;
 }
 
-std::vector < std::list < std::pair < int, int > > > Graph::getEdges(){
-    return this->edges;
+std::vector < std::list < std::pair < int, int > > > Grafo::getEdges(){
+    return this->conexiones;
 }
 
 //----------------------------------------------------------------------------------------------
-
 //setters
 
-void Graph::setVertices(std::vector < Pais >& vertices){
-    this->vertices = vertices;
+void Grafo::setVertices(std::vector < PaisG >& vertices){
+    this->paises = vertices;
 }
 
-void Graph::setEdges(std::vector < std::list < std::pair < int, int > > >& edges){
-    this.edges = edges;
+void Grafo::setEdges(std::vector < std::list < std::pair < int, int > > >& edges){
+    this->conexiones = edges;
 }
 
 //----------------------------------------------------------------------------------------------
-
 //inserting
 
-bool Graph::addVertex(Pais& vertex){
-    int vertexFound = searchVertice(vertex);
+bool Grafo::addVertex(PaisG& vertex){
+    int vertexFound = searchVertice(vertex.get_id());
     if(vertexFound == -1){
-        this->vertices.push_back(vertex);
-        this->edges.push_back(std::list<std::pair<int, int>>());
+        this->paises.push_back(vertex);
+        this->conexiones.push_back(std::list<std::pair<int, int>>());
         return true;
     }
     return false;
 }
 
-bool Graph::addEdge(Pais& origin, Pais& destination, int cost){
-    int destinationIndex = searchVertice(destination);
-    int originIndex = searchVertice(origin);
+bool Grafo::addEdge(PaisG& origin, PaisG& destination, int cost){
+    int destinationIndex = searchVertice(destination.get_id());
+    int originIndex = searchVertice(origin.get_id());
 
-    if(!searchEdge(origin, destination) && originIndex != -1 && destinationIndex != -1){
+    if(!searchEdge(origin.get_id(), destination.get_id()) && originIndex != -1 && destinationIndex != -1){
         std::pair < int, int > newEdge (destinationIndex, cost);
-        this->edges[originIndex].push_back(newEdge);
+        this->conexiones[originIndex].push_back(newEdge);
         return true;
     }
     return false;
@@ -74,10 +75,11 @@ bool Graph::addEdge(Pais& origin, Pais& destination, int cost){
 
 //searching
 
-int Graph::searchVertice(Pais& vertex){
+
+int Grafo::searchVertice(int vertex){
     int vertexFound = -1;
-    for(int i = 0 ; i < this->vertices.size() ; i++){
-        if(this->vertices[i] == vertex){
+    for(int i = 0 ; i < this->paises.size() ; i++){
+        if(this->paises[i].get_id() == vertex){
             vertexFound = i;
             break;
         }
@@ -85,14 +87,14 @@ int Graph::searchVertice(Pais& vertex){
     return vertexFound;
 }
 
-bool Graph::searchEdge(Pais& origin, Pais& destination){
+bool Grafo::searchEdge(int origin, int destination){
     typename  std::list < std::pair < int, int > >::iterator itL;
     int destinationIndex = searchVertice(destination);
     int originIndex = searchVertice(origin);
 
     if(destinationIndex != -1 && originIndex != -1){
-        itL = this->edges[originIndex].begin();
-        for(itL = this->edges[originIndex].begin() ; itL != this->edges[originIndex].end() ; itL++){
+        itL = this->conexiones[originIndex].begin();
+        for(itL = this->conexiones[originIndex].begin() ; itL != this->conexiones[originIndex].end() ; itL++){
             if(itL->first == destinationIndex){
                 return true;
             }
@@ -102,46 +104,26 @@ bool Graph::searchEdge(Pais& origin, Pais& destination){
 }
 
 //----------------------------------------------------------------------------------------------
-//general info
-
-int Graph::numVertices(){
-    return this->vertices.size();
-}
-
-int Graph::numEdges(){
-    typename  std::list < std::pair < int, C > >::iterator itL;
-    int numEdges = 0;
-
-    for(int i = 0 ; i < this->edges.size() ; i++){
-        std::list < std::pair < int, C > > auxEdges = this->edges[i];
-        itL = auxEdges.begin();
-        for(itL = auxEdges.begin() ; itL != auxEdges.end() ; itL++){
-            numEdges++;
-        }
-    }
-    return numEdges;
-}
-
-//----------------------------------------------------------------------------------------------
 //tours
-void Graph::plain(){
-    for(int i = 0 ; i < this->vertices.size() ; i++){
-        std::cout << this->vertices[i] << " ; ";
+void Grafo::plain(){
+    std::cout << "PAISES" << std::endl;
+    for(int i = 0 ; i < this->paises.size() ; i++){
+        std::cout << this->paises[i].get_id() << " ; ";
     }
 }
 
-void Graph::bfs(){
-    std::vector<bool> visited(this->vertices.size(), false);
+void Grafo::bfs(){
+    std::vector<bool> visited(this->paises.size(), false);
     std::queue<int> vertexQueue;
 
-    for (int i = 0; i < this->vertices.size(); i++) {
+    for (int i = 0; i < this->paises.size(); i++) {
         if (!visited[i]) {
             doBFS(i, visited, vertexQueue);
         }
     }
 }
 
-void Graph::doBFS(int startVertex, std::vector<bool>& visited, std::queue<int>& vertexQueue){
+void Grafo::doBFS(int startVertex, std::vector<bool>& visited, std::queue<int>& vertexQueue){
     visited[startVertex] = true;
     vertexQueue.push(startVertex);
 
@@ -149,12 +131,12 @@ void Graph::doBFS(int startVertex, std::vector<bool>& visited, std::queue<int>& 
         int currentVertex = vertexQueue.front();
         vertexQueue.pop();
 
-        std::cout << this->vertices[currentVertex] << ", ";
+        std::cout << this->paises[currentVertex].get_id() << ", ";
 
         typename  std::list < std::pair < int, int > >::iterator itL;
-        itL = this->edges[currentVertex].begin();
+        itL = this->conexiones[currentVertex].begin();
 
-        for( ; itL != this->edges[currentVertex].end() ; itL++){
+        for( ; itL != this->conexiones[currentVertex].end() ; itL++){
             int neighbor = (*itL).first;
             if (!visited[neighbor]) {
                 visited[neighbor] = true;
@@ -164,24 +146,24 @@ void Graph::doBFS(int startVertex, std::vector<bool>& visited, std::queue<int>& 
     }
 }
 
-void Graph::dfs(){
-    std::vector<bool> visited(this->vertices.size(), false);
+void Grafo::dfs(){
+    std::vector<bool> visited(this->paises.size(), false);
 
-    for (int i = 0; i < this->vertices.size(); ++i) {
+    for (int i = 0; i < this->paises.size(); ++i) {
         if (!visited[i]) {
             doDFS(i, visited);
         }
     }
 }
 
-void Graph::doDFS(int currentVertex, std::vector<bool>& visited) {
+void Grafo::doDFS(int currentVertex, std::vector<bool>& visited) {
     visited[currentVertex] = true;
-    std::cout << this->vertices[currentVertex] << ", ";
+    std::cout << this->paises[currentVertex].get_id() << ", ";
 
     typename  std::list < std::pair < int, int > >::iterator itL;
-    itL = this->edges[currentVertex].begin();
+    itL = this->conexiones[currentVertex].begin();
 
-    for ( ; itL != this->edges[currentVertex].end(); itL++) {
+    for ( ; itL != this->conexiones[currentVertex].end(); itL++) {
         int neighbor = (*itL).first;
         if (!visited[neighbor]) {
             doDFS(neighbor, visited);
@@ -189,15 +171,15 @@ void Graph::doDFS(int currentVertex, std::vector<bool>& visited) {
     }
 }
 
-void Graph::showEdges(){
+void Grafo::showEdges(){
     typename  std::list < std::pair < int, int > >::iterator itL;
 
-    for(int i = 0 ; i < this->edges.size() ; i++){
-        std::cout << "\n" << this->vertices[i] << ": ";
-        std::list < std::pair < int, int > > auxEdges = this->edges[i];
+    for(int i = 0 ; i < this->conexiones.size() ; i++){
+        std::cout << "\n" << this->paises[i].get_id() << ": ";
+        std::list < std::pair < int, int > > auxEdges = this->conexiones[i];
         itL = auxEdges.begin();
         for(itL = auxEdges.begin() ; itL != auxEdges.end() ; itL++){
-            std::cout << "(" << this->vertices[(*itL).first] << "," << (*itL).second << ") ";
+            std::cout << "(" << this->paises[(*itL).first].get_id() << "," << (*itL).second << ") ";
         }
         std::cout << std::endl;
     }
@@ -206,12 +188,31 @@ void Graph::showEdges(){
 
 //----------------------------------------------------------------------------------------------
 
-void Graph::readVertices(std::string file){
-    for(){
-
+void Grafo::readVertices(std::list < Carta > cartas){
+    for(std::list < Carta >::iterator it = cartas.begin() ; it != cartas.end() ; it++){
+        PaisG pais((*it).getId(), (*it).getPais(), (*it).getContinente());
+        this->addVertex(pais);
     }
 }
 
-void Graph::readConnections(std::string file){
+void Grafo::readConnections(std::string archivo){
+    std::ifstream file (archivo);
+    std::string line, word;
 
+    if(file.is_open()){
+        while(getline(file,line,'\n')){
+            std::stringstream ss(line);
+            getline(ss,word,'-');
+            int idPais = stoi(word);
+            PaisG pais = this->paises[searchVertice(idPais)];
+            while(getline(ss,word,';')){
+                int idVecino = stoi(word);
+                PaisG vecino = this->paises[searchVertice(idVecino)];
+                this->addEdge(pais, vecino, 0);
+            }
+        }
+    }else{
+        std::cout<<"Archivo de conexiones no leido"<<std::endl;
+    }
+    file.close();
 }
