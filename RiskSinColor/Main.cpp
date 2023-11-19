@@ -15,7 +15,8 @@ int main() {
     string archivo_conexiones = "Conexiones.txt";
     bool hayEspacio = false, inicializado = false, finalizado = false;
     int numTurno = 0, paisOrigen = 0, paisDestino = 0, intercambios = 0, numIntercambios = 1, unidadesGanadas = 4, ganador = 0, rta = 0;;
-    Partida risk(0);
+    Grafo g;
+    Partida risk(0, g);
     Persistencia persistencia;
 
     cout << "BIENVENIDO A RISK - GRUPO 2" << endl << endl << endl;
@@ -50,11 +51,8 @@ int main() {
                 else{
                     if(!turnonumerico(cd[1])){
                         int turno = stoi(cd[1]);
-
                         if(turnoValido(risk.get_jugadores(), turno)){
-
                             if(turnoCorrecto(risk.get_jugadores(), turno, &numTurno)){
-
                                 numTurno++;
                                 if(risk.jugadorVigente(numTurno)){
 
@@ -192,10 +190,10 @@ int main() {
                 }else{
                     if(verificarArchivo(cd[1],extensionBin)){
                         cout << "Guardar en archivo binario '" << cd[1] << "' :recibido"<< endl;
-                        cout << "Comando correcto"<< endl;
+                        /*cout << "Comando correcto"<< endl;
                         persistencia.setInfo(risk);
                         persistencia.setSimbolos();
-                        persistencia.escribirArchivoBinario(cd[1],risk);
+                        persistencia.escribirArchivoBinario(cd[1],risk);*/
 
                     }else{
                         cout << "Extension de archivo no valida"<< endl;
@@ -207,12 +205,12 @@ int main() {
                     if(verificarArchivo(cd[1],extensionTxt)){
                         if(persistencia.leerArchivoTxt(cd[1])){
                             cout << "Inicializacion del juego con archivo '" << cd[1] << "' correcta"<< endl;
-                            risk.cargarCartas(archivo_cartas);
+                            /*risk.cargarCartas(archivo_cartas);
                             risk.inicializarTablero();
                             risk.llenarContinentes();
                             risk.cargarConexiones(archivo_conexiones);
                             persistencia.recuperarPartida(risk);
-                            risk.mostrarInicializacion();
+                            risk.mostrarInicializacion();*/
                             inicializado = true;
                         }else{
                             cout << "Archivo vacio o incompleto\n";
@@ -220,12 +218,12 @@ int main() {
                     }else if(verificarArchivo(cd[1],extensionBin)){
                         cout << "Inicializacion del juego con archivo '" << cd[1] << "' correcta"<< endl;
                         if(persistencia.leerArchivoBin(cd[1])){
-                            risk.cargarCartas(archivo_cartas);
+                            /*risk.cargarCartas(archivo_cartas);
                             risk.inicializarTablero();
                             risk.llenarContinentes();
                             risk.cargarConexiones(archivo_conexiones);
                             persistencia.recuperarPartida(risk);
-                            risk.mostrarInicializacion();
+                            risk.mostrarInicializacion();*/
                             inicializado = true;
                         }else{
                             cout << "Archivo vacio o incompleto\n";
@@ -242,12 +240,12 @@ int main() {
             }
             else if (cd[0] == "costo_conquista") {
                 cout << "Costo de la conquista " << cd[1] << " :recibido" << endl;
-                Grafo g;
+                /*Grafo g;
                 risk.cargarCartas(archivo_cartas);
                 g.readVertices(risk.get_cartas());
                 g.readConnections(archivo_conexiones);
                 g.plain();
-                g.showEdges();
+                g.showEdges();*/
             }
             else {
                 cout << "Comando invalido" << endl;
@@ -263,11 +261,9 @@ int main() {
                 cout<<"****************************************"<<endl<<endl;
                 mostrarTablero();
                 risk.set_id(1);
-                risk.cargarCartas(archivo_cartas);
-                risk.inicializarJugadores();
-                risk.inicializarTablero();
-                risk.llenarContinentes();
+                risk.cargarTablero(archivo_cartas);
                 risk.cargarConexiones(archivo_conexiones);
+                risk.inicializarJugadores();
                 risk.ubicarUnidades(inicializado, 1);
                 risk.mostrarInicializacion();
                 std::cout<<"\nInicializacion satisfactoria"<<std::endl;

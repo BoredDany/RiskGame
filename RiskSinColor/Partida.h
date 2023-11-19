@@ -21,7 +21,7 @@ private:
     Grafo grafo;
 public:
     //consrtructores
-    Partida(int id);
+    Partida(int id, Grafo g);
     //getters
     std::vector<Jugador> get_jugadores();
     std::list<Carta> get_cartas();
@@ -32,23 +32,16 @@ public:
 
     //operaciones de inicicialización del juego
     void aggJugador(Jugador j);
-    void cargarCartas(std::string archivo_cartas);
+    void cargarTablero(std::string archivo_cartas);
     void asignarUnidades();
     void inicializarJugadores();
     bool buscarColorRepetido (std::string color);
-    void inicializarTablero();
-    bool repetido(std::string nombre);
-    void llenarContinentes();
     void cargarConexiones(std::string archivo);
-    void aggConexion(int pais, int vecino);
     void ubicarUnidades(bool& inicializado, int numUnidades);
     void mostrarInicializacion();
 
     //funciones relacionadas a atacar
-    bool paisLleno(int id);
-    void ocuparPais(int id, int idPais, int unidades);
     Carta obtenerCarta(int idPais);
-    bool tableroLleno();
     void elegirUbicacionAtaque(int posJug, int * paisOrigen, int * paisDestino);
     bool puedeAtacar(int posJ);
     bool paisExiste(int idP);
@@ -62,9 +55,8 @@ public:
     bool quitarUnidad(int idP);
 
     //operaciones de ubicacion de unidades
-    bool paisFortificable(int idJ, int idP);
     void intercambioNormal(int posJ);
-    int calcularPaises(int idJ);
+
     bool puedeUbicar(int idJ);
     void ubicarNuevasUnidades(int posJ, int gana, bool propias);
     void intercambioPorPaises(int posJ);

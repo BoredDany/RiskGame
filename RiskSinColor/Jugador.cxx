@@ -1,6 +1,7 @@
 #include "Jugador.h"
 #include "Continente.h"
 #include <cstring>
+#include <iostream>
 
 //constructores
 //--------------------------------------------------------------------
@@ -107,4 +108,20 @@ bool Jugador::tieneCarta(int idP){
         }
     }
     return false;
+}
+
+void Jugador::showCartas(){
+    std::list<Carta>::iterator it = this->cartas.begin();;
+    for (it = this->cartas.begin(); it != this->cartas.end(); it++) {
+        std::cout << it->getId() << ":" << it->getPais() << " - " << it->getFigura() << std::endl;
+    }
+}
+
+void Jugador::showCartasFigureFilter(std::string figura){
+    std::list<Carta>::iterator it = this->cartas.begin();
+    for(it = this->cartas.begin(); it != this->cartas.end(); it++){
+        if(it->getFigura() == figura){
+            std::cout<<it->getId()<<":"<<it->getPais()<<" - "<<it->getFigura()<<std::endl;
+        }
+    }
 }

@@ -325,7 +325,7 @@ void Persistencia::recuperarPartida(Partida& partida){
                 getline(ss,word3,'-');
                 unidadesP = stoi(word3);
 
-                partida.ocuparPais(j.getId(),pais,unidadesP);
+                partida.get_grafo().ocuparPais(j.getId(),pais,unidadesP);
             }
 
             partida.aggJugador(j);

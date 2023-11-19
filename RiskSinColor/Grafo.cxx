@@ -27,7 +27,7 @@ Grafo::Grafo() {
 //----------------------------------------------------------------------------------------------
 //getters
 
-std::vector < PaisG > Grafo::getVertices(){
+std::vector < PaisG > Grafo::getPaises(){
     return this->paises;
 }
 
@@ -188,6 +188,133 @@ void Grafo::showEdges(){
 
 //----------------------------------------------------------------------------------------------
 
+//inicializacion
+bool Grafo::paisLleno(int idPais){
+    for(int i = 0 ; i < this->paises.size() ; i++){
+        if(this->paises[i].get_id() == idPais && this->paises[i].get_unidades() == 0){
+            return false;
+        }
+    }
+    return true;
+}
+
+void Grafo::ocuparPais(int idJugador, int idPais, int unidades){
+    for(int i = 0 ; i < this->paises.size() ; i++){
+        if(this->paises[i].get_id() == idPais){
+            this->paises[i].set_id_jugador(idJugador);
+            this->paises[i].set_unidades(unidades);
+        }
+    }
+}
+
+bool Grafo::lleno(){
+    for(int i = 0 ; i < this->paises.size() ; i++){
+        if(this->paises[i].get_id_jugador() == 0){
+            return false;
+        }
+    }
+    return true;
+}
+//----------------------------------------------------------------------------------------------
+
+
+//turno
+int Grafo::calcularPaisesJugador(int idJugador){
+    int paises = 0;
+    for(int i = 0 ; i < this->paises.size() ; i++){
+        if(this->paises[i].get_id_jugador() == idJugador){
+            paises++;
+        }
+    }
+    return paises;
+}
+
+bool Grafo::jugadorPuedeUbicar(int idJugador){
+    for(int i = 0 ; i < this->paises.size() ; i++){
+        if(this->paises[i].get_id_jugador() == idJugador || this->paises[i].get_id_jugador() == 0){
+            return true;
+        }
+    }
+    return false;
+}
+
+bool Grafo::paisFortificable(int idJugador, int idPais){
+    for(int i = 0 ; i < this->paises.size() ; i++){
+        if(this->paises[i].get_id() == idPais){
+            if(this->paises[i].get_id_jugador() == idJugador || this->paises[i].get_id_jugador() == 0){
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+int Grafo::intercambioPaises(int idJugador){
+    int nAfrica = 0, nOceania = 0, nAsia = 0, nEuropa = 0, nLatam = 0, nNortAmerica = 0,
+            jAfrica = 0, jOceania = 0, jAsia = 0, jEuropa = 0, jLatam = 0, jNortAmerica = 0, gana = 0;
+
+    for(int i = 0 ; i < this->paises.size() ; i++){
+        if(this->paises[i].get_continente() == "Africa"){
+            nAfrica++;
+            if(this->paises[i].get_id_jugador() == idJugador){
+                jAfrica++;
+            }
+        }
+        if(this->paises[i].get_continente() == "Oceania"){
+            nOceania++;
+            if(this->paises[i].get_id_jugador() == idJugador){
+                jOceania++;
+            }
+        }
+        if(this->paises[i].get_continente() == "Asia"){
+            nAsia++;
+            if(this->paises[i].get_id_jugador() == idJugador){
+                jAsia++;
+            }
+        }
+        if(this->paises[i].get_continente() == "Europa"){
+            nEuropa++;
+            if(this->paises[i].get_id_jugador() == idJugador){
+                jEuropa++;
+            }
+        }
+        if(this->paises[i].get_continente() == "Sur America"){
+            nLatam++;
+            if(this->paises[i].get_id_jugador() == idJugador){
+                jLatam++;
+            }
+        }
+        if(this->paises[i].get_continente() == "Norte America"){
+            nNortAmerica++;
+            if(this->paises[i].get_id_jugador() == idJugador){
+                jNortAmerica++;
+            }
+        }
+    }
+
+    if(nAfrica == jAfrica){gana+=3;}
+    if(nOceania == jOceania){gana+=2;}
+    if(nAsia == jAsia){gana+=7;}
+    if(nEuropa == jEuropa){gana+=5;}
+    if(nLatam == jLatam){gana+=2;}
+    if(nNortAmerica == jNortAmerica){gana+=5;}
+
+    return gana;
+}
+
+bool Grafo::jugadorOcupaPais(int idJugador, int idPais){
+    for(int i = 0 ; i < this->paises.size() ; i++){
+        if(this->paises[i].get_id() == idPais && this->paises[i].get_id_jugador() == idJugador){
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+//----------------------------------------------------------------------------------------------
+
+//algoritmos
 void Grafo::readVertices(std::list < Carta > cartas){
     for(std::list < Carta >::iterator it = cartas.begin() ; it != cartas.end() ; it++){
         PaisG pais((*it).getId(), (*it).getPais(), (*it).getContinente());

@@ -36,6 +36,8 @@ public:
     void quitarCarta(int idP);
     void tresCartasCumplen(int * ganaIguales, int * ganaTodas);
     bool tieneCarta(int idP);
+    void showCartas();
+    void showCartasFigureFilter(std::string figura);
 
 };
 

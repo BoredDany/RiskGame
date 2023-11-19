@@ -22,7 +22,7 @@ public:
     Grafo();
 
     //getters
-    std::vector < PaisG > getVertices();
+    std::vector < PaisG > getPaises();
     std::vector < std::list < std::pair < int, int > > > getEdges();
 
     //setters
@@ -44,6 +44,18 @@ public:
     void dfs();
     void doDFS(int currentVertex, std::vector<bool>& visited);
     void showEdges();
+
+    //inicializacion
+    bool paisLleno(int idPais);
+    void ocuparPais(int idJugador, int idPais, int unidades);
+    bool lleno();
+
+    //turno
+    int calcularPaisesJugador(int idJugador);
+    bool jugadorPuedeUbicar(int idJugador);
+    bool paisFortificable(int idJugador, int idPais);
+    int intercambioPaises(int idJugador);
+    bool jugadorOcupaPais(int idJugador, int idPais);
 
     //algoritmos
     void readVertices(std::list < Carta > cartas);
