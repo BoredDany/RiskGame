@@ -202,7 +202,7 @@ void Grafo::ocuparPais(int idJugador, int idPais, int unidades){
     for(int i = 0 ; i < this->paises.size() ; i++){
         if(this->paises[i].get_id() == idPais){
             this->paises[i].set_id_jugador(idJugador);
-            this->paises[i].set_unidades(unidades);
+            this->paises[i].set_unidades(this->paises[i].get_unidades()+unidades);
         }
     }
 }
@@ -215,8 +215,8 @@ bool Grafo::lleno(){
     }
     return true;
 }
-//----------------------------------------------------------------------------------------------
 
+//----------------------------------------------------------------------------------------------
 
 //turno
 int Grafo::calcularPaisesJugador(int idJugador){
@@ -249,7 +249,7 @@ bool Grafo::paisFortificable(int idJugador, int idPais){
     return false;
 }
 
-int Grafo::intercambioPaises(int idJugador){
+int Grafo::intercambioPaises(int idJugador, std::list<std::string>& continentes){
     int nAfrica = 0, nOceania = 0, nAsia = 0, nEuropa = 0, nLatam = 0, nNortAmerica = 0,
             jAfrica = 0, jOceania = 0, jAsia = 0, jEuropa = 0, jLatam = 0, jNortAmerica = 0, gana = 0;
 
@@ -292,12 +292,12 @@ int Grafo::intercambioPaises(int idJugador){
         }
     }
 
-    if(nAfrica == jAfrica){gana+=3;}
-    if(nOceania == jOceania){gana+=2;}
-    if(nAsia == jAsia){gana+=7;}
-    if(nEuropa == jEuropa){gana+=5;}
-    if(nLatam == jLatam){gana+=2;}
-    if(nNortAmerica == jNortAmerica){gana+=5;}
+    if(nAfrica == jAfrica){gana+=3; continentes.push_back("Africa");}
+    if(nOceania == jOceania){gana+=2; continentes.push_back("Oceania");}
+    if(nAsia == jAsia){gana+=7; continentes.push_back("Asia");}
+    if(nEuropa == jEuropa){gana+=5; continentes.push_back("Europa");}
+    if(nLatam == jLatam){gana+=2; continentes.push_back("Sur America");}
+    if(nNortAmerica == jNortAmerica){gana+=5; continentes.push_back("Norte America");}
 
     return gana;
 }
@@ -305,6 +305,34 @@ int Grafo::intercambioPaises(int idJugador){
 bool Grafo::jugadorOcupaPais(int idJugador, int idPais){
     for(int i = 0 ; i < this->paises.size() ; i++){
         if(this->paises[i].get_id() == idPais && this->paises[i].get_id_jugador() == idJugador){
+            return true;
+        }
+    }
+    return false;
+}
+
+//atacar
+//----------------------------------------------------------------------------------------------
+
+bool Grafo::puedeAtacar(int idJugador){
+    for(int i = 0 ; i < this->paises.size() ; i++){
+        if(this->paises[i].get_id_jugador() == idJugador){
+            int indexPais = searchVertice(this->paises[i].get_id());
+            for(typename std::list < std::pair <int,int> >::iterator it = this->conexiones[indexPais].begin();
+                    it != this->conexiones[indexPais].end(); it++){
+                if(paisAtacable(idJugador, this->paises[(*it).first].get_id())){
+                    return true;
+                }
+            }
+        }
+    }
+    return false;
+}
+
+bool Grafo::paisAtacable(int idJugador, int idPais){
+    for(int i = 0 ; i < this->paises.size() ; i++){
+        if(this->paises[i].get_id() == idPais){
+            if(this->paises[i].get_id_jugador() != idJugador && this->paises[i].get_id_jugador() != 0){
                 return true;
             }
         }
@@ -312,8 +340,95 @@ bool Grafo::jugadorOcupaPais(int idJugador, int idPais){
     return false;
 }
 
-//----------------------------------------------------------------------------------------------
+bool Grafo::origenAptoParaAtaque(int idJugador, int idPais){
+    for(int i = 0 ; i < this->paises.size() ; i++){
+        if(this->paises[i].get_id() == idPais){
+            int indexPais = searchVertice(this->paises[i].get_id());
+            for(typename std::list < std::pair <int,int> >::iterator it = this->conexiones[indexPais].begin();
+                    it != this->conexiones[indexPais].end(); it++){
+                if(paisAtacable(idJugador, this->paises[(*it).first].get_id())){
+                    return true;
+                }
+            }
+        }
+    }
+    return false;
+}
 
+bool Grafo::quitarUnidad(int idPais){
+    bool vacio = false;
+    for(int i = 0 ; i < this->paises.size() ; i++){
+        if(this->paises[i].get_id() == idPais){
+            if(this->paises[i].get_id() == idPais){
+                this->paises[i].set_unidades(this->paises[i].get_unidades()-1);
+                if(this->paises[i].get_unidades() <= 0){
+                    this->paises[i].set_id_jugador(0);
+                    vacio = true;
+                }
+                break;
+            }
+        }
+    }
+    return vacio;
+}
+
+//----------------------------------------------------------------------------------------------
+//fortificar
+
+bool Grafo::puedeFortificar(int idJugador){
+    for(int i = 0 ; i < this->paises.size() ; i++){
+        if(this->paises[i].get_id_jugador() == idJugador){
+            for(typename std::list < std::pair <int,int> >::iterator it = this->conexiones[i].begin();
+                    it != this->conexiones[i].end(); it++){
+                if(this->paises[(*it).first].get_id_jugador() == idJugador || this->paises[(*it).first].get_id_jugador() == 0){
+                    return true;
+                }
+            }
+        }
+    }
+    return false;
+}
+
+bool Grafo::unidadesSuficientes(int idJugador, int idPais, int unidades){
+    for(int i = 0 ; i < this->paises.size() ; i++){
+        if(this->paises[i].get_id_jugador() == idJugador && this->paises[i].get_unidades() >= unidades){
+            return true;
+        }
+    }
+    return false;
+}
+
+bool Grafo::aptoParaFortificar(int idJugador, int idPais){
+    for(int i = 0 ; i < this->paises.size() ; i++){
+        if(this->paises[i].get_id() == idPais){
+            for(typename std::list < std::pair <int,int> >::iterator it = this->conexiones[i].begin();
+                    it != this->conexiones[i].end(); it++){
+                if(paisFortificable(idJugador, this->paises[(*it).first].get_id())){
+                    return true;
+                }
+            }
+        }
+    }
+    return false;
+}
+
+void Grafo::moverUnidades(int idJugador, int origen, int destino, int unidadesM){
+    int indexOrigen = searchVertice(origen);
+    int indexDestino = searchVertice(destino);
+
+    //restar del origen
+    this->paises[indexOrigen].set_unidades(this->paises[indexOrigen].get_unidades()-unidadesM);
+    if(this->paises[indexOrigen].get_unidades() <= 0){
+        this->paises[indexOrigen].set_id_jugador(0);
+    }
+
+    //sumar al destino
+    this->paises[indexDestino].set_unidades(this->paises[indexDestino].get_unidades()+unidadesM);
+    this->paises[indexDestino].set_id_jugador(idJugador);
+
+}
+
+//----------------------------------------------------------------------------------------------
 //algoritmos
 void Grafo::readVertices(std::list < Carta > cartas){
     for(std::list < Carta >::iterator it = cartas.begin() ; it != cartas.end() ; it++){

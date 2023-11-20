@@ -29,7 +29,6 @@ int main() {
         hayEspacio = tiene_espacio(comando, cd);
         finalizado = risk.finalizado(&ganador);
         if(finalizado){
-
             inicializado = false;
             ganadorR();
             cout << "JUEGO FINALIZADO, HA GANADO EL JUGADOR " <<ganador<< endl;
@@ -61,10 +60,11 @@ int main() {
                                     risk.intercambioNormal(numTurno);
                                     risk.intercambioPorPaises(numTurno);
                                     intercambios = risk.intercambioPorCartasCondicionales(numTurno);
+
                                     if(intercambios){
-                                        cout<<"\nEL JUGADOR TIENE CARTAS CON LAS CONDICIONES DADAS";
-                                        cout<<"\nSe han hecho "<<numIntercambios<<" intercambios"<<endl;
-                                        cout<<"las unidades ganadas serian "<<unidadesGanadas<<endl;
+                                        cout << "\nEL JUGADOR TIENE CARTAS CON LAS CONDICIONES DADAS";
+                                        cout << "\nSe han hecho " << numIntercambios << " intercambios" << endl;
+                                        cout << "las unidades ganadas serian " << unidadesGanadas << endl;
                                         if(risk.intercambiarCartas(numTurno,unidadesGanadas)){
                                             numIntercambios+=1;
                                             incrementarGrupo(&numIntercambios, &unidadesGanadas);
@@ -81,7 +81,7 @@ int main() {
                                         switch (rta) {
                                             case 1:
                                                 cout<<"El jugador tiene "<<unidadesPropias<<" unidades"<<endl;
-                                                if(risk.puedeUbicar(risk.get_jugadores()[numTurno-1].getId())){
+                                                if(risk.get_grafo().jugadorPuedeUbicar(risk.get_jugadores()[numTurno-1].getId())){
                                                     risk.ubicarNuevasUnidades(numTurno,unidadesPropias,true);
                                                     risk.mostrarInicializacion();
                                                 }else{
@@ -106,7 +106,7 @@ int main() {
                                         cin >> rta;
                                         switch (rta) {
                                             case 1:
-                                                if(risk.puedeAtacar(numTurno)){
+                                                if(risk.get_grafo().puedeAtacar(risk.get_jugadores()[numTurno-1].getId())){
                                                     cout << "\nATAQUE INICIADO" <<endl;
                                                     mostrarTablero();
                                                     risk.elegirUbicacionAtaque(numTurno, &paisOrigen, &paisDestino);
@@ -133,7 +133,8 @@ int main() {
                                         cin >> rta;
                                         switch (rta) {
                                             case 1:
-                                                if(risk.puedeFortificar(numTurno)){
+
+                                                if(risk.get_grafo().puedeFortificar(risk.get_jugadores()[numTurno-1].getId())){
                                                     cout << "\nFORTIFICACION INICIADA" <<endl;
                                                     mostrarTablero();
                                                     risk.fortificarTerritorio(numTurno);
@@ -190,10 +191,10 @@ int main() {
                 }else{
                     if(verificarArchivo(cd[1],extensionBin)){
                         cout << "Guardar en archivo binario '" << cd[1] << "' :recibido"<< endl;
-                        /*cout << "Comando correcto"<< endl;
+                        cout << "Comando correcto"<< endl;
                         persistencia.setInfo(risk);
                         persistencia.setSimbolos();
-                        persistencia.escribirArchivoBinario(cd[1],risk);*/
+                        persistencia.escribirArchivoBinario(cd[1],risk);
 
                     }else{
                         cout << "Extension de archivo no valida"<< endl;
@@ -205,12 +206,10 @@ int main() {
                     if(verificarArchivo(cd[1],extensionTxt)){
                         if(persistencia.leerArchivoTxt(cd[1])){
                             cout << "Inicializacion del juego con archivo '" << cd[1] << "' correcta"<< endl;
-                            /*risk.cargarCartas(archivo_cartas);
-                            risk.inicializarTablero();
-                            risk.llenarContinentes();
+                            risk.cargarTablero(archivo_cartas);
                             risk.cargarConexiones(archivo_conexiones);
                             persistencia.recuperarPartida(risk);
-                            risk.mostrarInicializacion();*/
+                            risk.mostrarInicializacion();
                             inicializado = true;
                         }else{
                             cout << "Archivo vacio o incompleto\n";
@@ -218,12 +217,10 @@ int main() {
                     }else if(verificarArchivo(cd[1],extensionBin)){
                         cout << "Inicializacion del juego con archivo '" << cd[1] << "' correcta"<< endl;
                         if(persistencia.leerArchivoBin(cd[1])){
-                            /*risk.cargarCartas(archivo_cartas);
-                            risk.inicializarTablero();
-                            risk.llenarContinentes();
+                            risk.cargarTablero(archivo_cartas);
                             risk.cargarConexiones(archivo_conexiones);
                             persistencia.recuperarPartida(risk);
-                            risk.mostrarInicializacion();*/
+                            risk.mostrarInicializacion();
                             inicializado = true;
                         }else{
                             cout << "Archivo vacio o incompleto\n";

@@ -1,5 +1,4 @@
 #include "Jugador.h"
-#include "Continente.h"
 #include <cstring>
 #include <iostream>
 

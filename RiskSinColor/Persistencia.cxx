@@ -3,7 +3,7 @@
 #include "Partida.h"
 #include "Carta.h"
 #include "Jugador.h"
-#include "Continente.h"
+#include "PaisG.h"
 #include <cstring>
 #include <string>
 #include <stack>
@@ -69,19 +69,17 @@ void Persistencia::setInfo(Partida& partida){
             (this->info).append(",");
         }
 
-        cantPaises = partida.calcularPaises(j.getId());
+        cantPaises = partida.get_grafo().calcularPaisesJugador(j.getId());
 
         (this->info).append(std::to_string(cantPaises));
 
         //paises ocupados por el jugador
-        for(Continente c : partida.get_tablero()){
-            for(Pais p : c.get_paises()){
-                if(p.get_id_jugador() == j.getId()){
-                    (this->info).append(",");
-                    (this->info).append(std::to_string(p.get_id()));
-                    (this->info).append("-");
-                    (this->info).append(std::to_string(p.get_unidades()));
-                }
+        for(PaisG p: partida.get_grafo().getPaises()){
+            if(p.get_id_jugador() == j.getId()){
+                (this->info).append(",");
+                (this->info).append(std::to_string(p.get_id()));
+                (this->info).append("-");
+                (this->info).append(std::to_string(p.get_unidades()));
             }
         }
 
@@ -140,17 +138,15 @@ void Persistencia::escribirArchivoTxt(std::string nameFile, Partida& partida){
                 outputfile << c.getId() << ",";
             }
 
-            cantPaises = partida.calcularPaises(j.getId());
+            cantPaises = partida.get_grafo().calcularPaisesJugador(j.getId());
 
             outputfile << cantPaises;
 
             //paises ocupados por el jugador
-            for(Continente c : partida.get_tablero()){
-                for(Pais p : c.get_paises()){
-                    if(p.get_id_jugador() == j.getId()){
-                        outputfile << ",";
-                        outputfile << p.get_id() << "-" << p.get_unidades();
-                    }
+            for(PaisG p: partida.get_grafo().getPaises()){
+                if(p.get_id_jugador() == j.getId()){
+                    outputfile << ",";
+                    outputfile << p.get_id() << "-" << p.get_unidades();
                 }
             }
             outputfile << ";";
@@ -325,7 +321,7 @@ void Persistencia::recuperarPartida(Partida& partida){
                 getline(ss,word3,'-');
                 unidadesP = stoi(word3);
 
-                partida.get_grafo().ocuparPais(j.getId(),pais,unidadesP);
+                partida.ocupar(j.getId(),pais,unidadesP);
             }
 
             partida.aggJugador(j);

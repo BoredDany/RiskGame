@@ -54,8 +54,20 @@ public:
     int calcularPaisesJugador(int idJugador);
     bool jugadorPuedeUbicar(int idJugador);
     bool paisFortificable(int idJugador, int idPais);
-    int intercambioPaises(int idJugador);
+    int intercambioPaises(int idJugador, std::list<std::string>& continentes);
     bool jugadorOcupaPais(int idJugador, int idPais);
+
+    //atacar
+    bool puedeAtacar(int idJugador);
+    bool paisAtacable(int idJugador, int idPais);
+    bool origenAptoParaAtaque(int idJugador, int idPais);
+    bool quitarUnidad(int idPais);
+
+    //fortificar
+    bool puedeFortificar(int idJugador);
+    bool unidadesSuficientes(int idJugador, int idPais, int unidades);
+    bool aptoParaFortificar(int idJugador, int idPais);
+    void moverUnidades(int idJugador, int origen, int destino, int unidadesM);
 
     //algoritmos
     void readVertices(std::list < Carta > cartas);

@@ -5,7 +5,6 @@
 #ifndef RISK_PARTIDA_H
 #define RISK_PARTIDA_H
 
-#include "Continente.h"
 #include "Carta.h"
 #include "Jugador.h"
 #include "Grafo.h"
@@ -17,20 +16,21 @@ private:
     int id;
     std::vector<Jugador> jugadores;
     std::list<Carta> cartas;
-    std::list<Continente> tablero;
     Grafo grafo;
 public:
     //consrtructores
     Partida(int id, Grafo g);
+
     //getters
     std::vector<Jugador> get_jugadores();
     std::list<Carta> get_cartas();
-    std::list<Continente> get_tablero();
     Grafo get_grafo();
+
     //setters
     void set_id(int id);
 
     //operaciones de inicicialización del juego
+    void ocupar(int idJugador, int idPais, int unidades);
     void aggJugador(Jugador j);
     void cargarTablero(std::string archivo_cartas);
     void asignarUnidades();
@@ -43,21 +43,12 @@ public:
     //funciones relacionadas a atacar
     Carta obtenerCarta(int idPais);
     void elegirUbicacionAtaque(int posJug, int * paisOrigen, int * paisDestino);
-    bool puedeAtacar(int posJ);
-    bool paisExiste(int idP);
-    bool origenAptoParaAtaque(int posJ, int idP);
-    bool paisAtacable(int idJ, int idP);
-    bool paisVecino(int paisOrigen, int paisDestino);
-    bool jugadorOcupaPais(int idJ, int idP);
     int buscarAtacado(int idP);
     void atacar(int posAtacante, int origen, int destino);
     int lanzarDados(int numDados);
-    bool quitarUnidad(int idP);
 
     //operaciones de ubicacion de unidades
     void intercambioNormal(int posJ);
-
-    bool puedeUbicar(int idJ);
     void ubicarNuevasUnidades(int posJ, int gana, bool propias);
     void intercambioPorPaises(int posJ);
     bool intercambioPorCartasCondicionales(int posJ);
@@ -66,10 +57,7 @@ public:
     bool ubicarUnidadesDeCartas(std::string figura, int posJ, int gana, bool mismas);
 
     //operaciones de fortificación
-    bool puedeFortificar(int posJ);
     void fortificarTerritorio(int jugadorIndex);
-    bool aptoParaFortificar(int idP, int posJ);
-    bool unidadesSuficientes(int posJ, int idP, int unidades);
     void moverUnidades(int posJ, int origen, int destino, int unidadesM);
 
     //operaciones de terminación del juego

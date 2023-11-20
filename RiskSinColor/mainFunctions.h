@@ -6,7 +6,6 @@
 #include <vector>
 #include "Carta.h"
 #include "Jugador.h"
-#include "Continente.h"
 #include "Partida.h"
 
 using namespace std;
