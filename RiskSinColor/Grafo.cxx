@@ -544,3 +544,119 @@ int Grafo::dijkstra(int initial, int idJugador, std::vector<int>& distance, std:
 
     return bestDistance;
 }
+
+void Grafo::conquistaCosto (int idJugador, int idPais) {
+
+    int idPaisCercano;
+    std::cout << "Jugador " << idJugador << std::endl;
+    updateCosts();
+    dijkstraCostoConquista(idJugador,idPais);
+
+    idPaisCercano = buscarMasCercano(idJugador,idPais);
+    dijkstraCostoConquista(idJugador, idPaisCercano);
+}
+
+int Grafo::buscarMasCercano(int idJugador, int destiny){
+    int n = this->paises.size();
+    std::vector<int> distance(n, std::numeric_limits<int>::max());
+    std::vector<int> parent(n, -1);
+    std::vector<bool> visited(n, false);
+
+    // Find the index of the start vertex
+    int startIndex = searchVertice(destiny);
+
+    if (startIndex == -1) {
+        std::cerr << "Error: Start vertex not found." << std::endl;
+        return -1;
+    }
+
+    distance[startIndex] = 0;
+
+    // Priority queue to store vertices and their distances
+    std::priority_queue<std::pair<int, int>, std::vector<std::pair<int, int> >, std::greater<std::pair<int, int> > > pq;
+    pq.push( { 0, startIndex} );
+
+    while (!pq.empty()) {
+        int u = pq.top().second; //vertice - indice del país destino
+        pq.pop();
+
+        if (visited[u]) {
+            continue; // Skip if the vertex is already visited
+        }
+
+        visited[u] = true;
+
+        // Explore all neighbors of the selected vertex 'u'
+        for(typename std::list<std::pair<int,int> >::iterator it = this->conexiones[u].begin() ; it != this->conexiones[u].end(); it++){
+            int v = (*it).first;
+            int edgeCost = (*it).second;
+
+            if (!visited[v] && distance[u] + edgeCost < distance[v]) {
+                distance[v] = distance[u] + edgeCost;
+                parent[v] = u;
+                pq.push({distance[v], v});
+                for(PaisG p: this->getPaises()){
+                    if((p.get_id() == pq.top().second)&&(p.get_id_jugador() == idJugador)){
+                        return p.get_id(); //retorno el id del país
+                    }
+                }
+            }
+        }
+    }
+    return -1;
+}
+
+void Grafo::dijkstraCostoConquista(int idJugador,int destiny) {
+    int n = this->paises.size();
+    std::vector<int> distance(n, std::numeric_limits<int>::max());
+    std::vector<int> parent(n, -1);
+    std::vector<bool> visited(n, false);
+
+    // Find the index of the start vertex
+    int startIndex = searchVertice(destiny);
+
+    if (startIndex == -1) {
+        std::cerr << "Error: Start vertex not found." << std::endl;
+        return;
+    }
+
+    distance[startIndex] = 0;
+
+    // Priority queue to store vertices and their distances
+    std::priority_queue<std::pair<int, int>, std::vector<std::pair<int, int> >, std::greater<std::pair<int, int> > > pq;
+    pq.push({0, startIndex});
+
+    while (!pq.empty()) {
+        int u = pq.top().second;
+        pq.pop();
+
+        if (visited[u]) {
+            continue; // Skip if the vertex is already visited
+        }
+
+        visited[u] = true;
+
+        // Explore all neighbors of the selected vertex 'u'
+        for (typename std::list<std::pair<int, int> >::iterator it = this->conexiones[u].begin();
+             it != this->conexiones[u].end(); it++) {
+            int v = (*it).first;
+            int edgeCost = (*it).second;
+
+            if (!visited[v] && distance[u] + edgeCost < distance[v]) {
+                distance[v] = distance[u] + edgeCost;
+                parent[v] = u;
+                pq.push({distance[v], v});
+            }
+        }
+    }
+
+    // Print the edges and distances
+    std::cout << "GRAPH" << std::endl;
+    std::cout << "Edges and Distances from vertex " << destiny << ":" << std::endl;
+    for (int i = 0; i < n; ++i) {
+        if (i != startIndex) {
+            std::cout << "Edge: " << this->paises[parent[i]].get_id() << " - " << this->paises[i].get_id()
+                      << " with distance " << distance[i] << std::endl;
+        }
+    }
+}
