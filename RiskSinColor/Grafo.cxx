@@ -459,18 +459,19 @@ void Grafo::dijkstra(int initial) {
     std::vector<int> distance(n, std::numeric_limits<int>::max());
     std::vector<int> parent(n, -1);
     std::vector<bool> visited(n, false);
+    std::vector<std::list<int>> paths(n); // Vector de listas para almacenar los caminos
 
-    // Find the index of the start vertex
+    // Encontrar el índice del vértice inicial
     int startIndex = searchVertice(initial);
 
     if (startIndex == -1) {
-        std::cerr << "Error: Start vertex not found." << std::endl;
+        std::cerr << "Error: Vértice inicial no encontrado." << std::endl;
         return;
     }
 
     distance[startIndex] = 0;
 
-    // Priority queue to store vertices and their distances
+    // Cola de prioridad para almacenar vértices y sus distancias
     std::priority_queue<std::pair<int, int>, std::vector<std::pair<int, int>>, std::greater<std::pair<int, int>>> pq;
     pq.push({0, startIndex});
 
@@ -479,13 +480,13 @@ void Grafo::dijkstra(int initial) {
         pq.pop();
 
         if (visited[u]) {
-            continue; // Skip if the vertex is already visited
+            continue; // Saltar si el vértice ya fue visitado
         }
 
         visited[u] = true;
 
-        // Explore all neighbors of the selected vertex 'u'
-        for(typename std::list<std::pair<int,int>>::iterator it = this->conexiones[u].begin() ; it != this->conexiones[u].end(); it++){
+        // Explorar todos los vecinos del vértice seleccionado 'u'
+        for (typename std::list<std::pair<int,int>>::iterator it = this->conexiones[u].begin(); it != this->conexiones[u].end(); it++) {
             int v = (*it).first;
             int edgeCost = (*it).second;
 
@@ -493,16 +494,26 @@ void Grafo::dijkstra(int initial) {
                 distance[v] = distance[u] + edgeCost;
                 parent[v] = u;
                 pq.push({distance[v], v});
+
+                // Actualizar el camino hacia 'v' con la información de 'u'
+                paths[v] = paths[u]; // Copiar el camino desde el nodo inicial hasta 'u'
+                paths[v].push_back(u); // Agregar 'u' al camino hacia 'v'
             }
         }
     }
 
-    // Print the edges and distances
-    std::cout << "GRAPH" << std::endl;
-    std::cout << "Edges and Distances from vertex " << initial << ":" << std::endl;
+    // Imprimir los bordes y las distancias
+    std::cout << "GRAFO" << std::endl;
+    std::cout << "Bordes y distancias desde el vértice " << initial << ":" << std::endl;
     for (int i = 0; i < n; ++i) {
         if (i != startIndex) {
-            std::cout << "Edge: " << this->paises[parent[i]].get_id() << " - " << this->paises[i].get_id() << " with distance " << distance[i] << std::endl;
+            std::cout << "Borde: " << this->paises[parent[i]].get_id() << " - " << this->paises[i].get_id() << " con distancia " << distance[i] << std::endl;
+            std::cout << "Camino: ";
+            for (int node : paths[i]) {
+                std::cout << this->paises[node].get_id() << " -> ";
+            }
+            std::cout << this->paises[i].get_id() << std::endl;
         }
     }
+    std::cout<<std::endl;
 }
