@@ -72,7 +72,8 @@ public:
     //algoritmos
     void conquistaMasBarata(int idJugador);
     void updateCosts();
-    void dijkstra(int initial);
+    int dijkstra(int initial, int idJugador, std::vector<int>& distance, std::vector<std::list<int>>& paths);
+    void showPath(int startIndex, int bestDistance, std::vector<int>& distance);
 };
 
 #endif //RISKSINCOLOR_GRAFO_H

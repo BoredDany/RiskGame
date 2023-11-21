@@ -445,31 +445,65 @@ void Grafo::updateCosts(){
 
 void Grafo::conquistaMasBarata (int idJugador) {
 
-    std::cout << "Jugador " << idJugador << std::endl;
+    int n = this->paises.size();
     updateCosts();
+    std::list < std::vector<int> > distancesDij;
+    std::list < std::vector<std::list<int>> > pathsDij;
+
+    int bestDistance = std::numeric_limits<int>::max();
     for(int i = 0 ; i < this->paises.size() ; i++){
         if(this->paises[i].get_id_jugador() == idJugador){
-            dijkstra(this->paises[i].get_id());
+            std::vector<int> distance(n, std::numeric_limits<int>::max());
+            std::vector<std::list<int>> paths(n); // Vector de listas para almacenar los caminos
+            int distanceP = dijkstra(this->paises[i].get_id(), idJugador, distance, paths);
+            distancesDij.push_back(distance);
+            pathsDij.push_back(paths);
+            if(distanceP <= bestDistance){
+                bestDistance = distanceP;
+            }
+        }
+    }
+    std::cout << "Conquista(s) mas barata(s) para el jugador " << idJugador << ":" << std::endl;
+
+    typename std::list < std::vector<std::list<int>> >::iterator itP = pathsDij.begin();
+
+    for(typename std::list < std::vector<int> >::iterator itD = distancesDij.begin() ; itD != distancesDij.end(); itD++, itP++){
+        for(int i = 0 ; i < n ; i++){
+            if((*itD)[i] == bestDistance){
+                typename std::list<int>::iterator itR = (*itP)[i].begin();
+
+                std::cout << "Conquistar el territorio: " << this->paises[i].get_id() <<
+                          " desde el territorio: " << this->paises[(*itR)].get_id() << " derrotando " << (*itD)[i] << " tropa(s)" << std::endl;
+                std::cout << "Para conquistar el territorio  " << this->paises[i].get_id() << " debe pasar por los territorios:";
+
+                for(itR = (*itP)[i].begin() ; itR != (*itP)[i].end(); itR++){
+                    std::cout << this->paises[*itR].get_id() << " -> ";
+                }
+                /*for (int node : (*itP)[i]) {
+                    std::cout << this->paises[node].get_id() << " -> ";
+                }*/
+                std::cout << this->paises[i].get_id() << std::endl;
+            }
         }
     }
 }
 
-void Grafo::dijkstra(int initial) {
+
+int Grafo::dijkstra(int initial, int idJugador, std::vector<int>& distance, std::vector<std::list<int>>& paths) {
     int n = this->paises.size();
-    std::vector<int> distance(n, std::numeric_limits<int>::max());
-    std::vector<int> parent(n, -1);
+    int bestDistance = std::numeric_limits<int>::max();
     std::vector<bool> visited(n, false);
-    std::vector<std::list<int>> paths(n); // Vector de listas para almacenar los caminos
 
     // Encontrar el índice del vértice inicial
     int startIndex = searchVertice(initial);
 
     if (startIndex == -1) {
         std::cerr << "Error: Vértice inicial no encontrado." << std::endl;
-        return;
+        return -1;
     }
 
     distance[startIndex] = 0;
+    int unidadesJugador = this->paises[startIndex].get_unidades();
 
     // Cola de prioridad para almacenar vértices y sus distancias
     std::priority_queue<std::pair<int, int>, std::vector<std::pair<int, int>>, std::greater<std::pair<int, int>>> pq;
@@ -492,7 +526,6 @@ void Grafo::dijkstra(int initial) {
 
             if (!visited[v] && distance[u] + edgeCost < distance[v]) {
                 distance[v] = distance[u] + edgeCost;
-                parent[v] = u;
                 pq.push({distance[v], v});
 
                 // Actualizar el camino hacia 'v' con la información de 'u'
@@ -502,18 +535,12 @@ void Grafo::dijkstra(int initial) {
         }
     }
 
-    // Imprimir los bordes y las distancias
-    std::cout << "GRAFO" << std::endl;
-    std::cout << "Bordes y distancias desde el vértice " << initial << ":" << std::endl;
+    //Find best path based on distance
     for (int i = 0; i < n; ++i) {
-        if (i != startIndex) {
-            std::cout << "Borde: " << this->paises[parent[i]].get_id() << " - " << this->paises[i].get_id() << " con distancia " << distance[i] << std::endl;
-            std::cout << "Camino: ";
-            for (int node : paths[i]) {
-                std::cout << this->paises[node].get_id() << " -> ";
-            }
-            std::cout << this->paises[i].get_id() << std::endl;
+        if (i != startIndex && this->paises[i].get_id_jugador() != idJugador && distance[i] < bestDistance && unidadesJugador >= distance[i]) {
+            bestDistance = distance[i];
         }
     }
-    std::cout<<std::endl;
+
+    return bestDistance;
 }
