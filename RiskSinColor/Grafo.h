@@ -72,7 +72,7 @@ public:
     //algoritmos
     void conquistaMasBarata(int idJugador);
     void updateCosts();
-    void dijkstra(PaisG& initial);
+    void dijkstra(int initial);
 };
 
 #endif //RISKSINCOLOR_GRAFO_H

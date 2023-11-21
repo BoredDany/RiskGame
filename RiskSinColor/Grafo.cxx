@@ -447,13 +447,16 @@ void Grafo::conquistaMasBarata (int idJugador) {
 
     std::cout << "Jugador " << idJugador << std::endl;
     updateCosts();
-
+    for(int i = 0 ; i < this->paises.size() ; i++){
+        if(this->paises[i].get_id_jugador() == idJugador){
+            dijkstra(this->paises[i].get_id());
+        }
+    }
 }
 
-void Grafo::dijkstra(PaisG& initial) {
-    int n = vertices.size();
-
-    std::vector<C> distance(n, std::numeric_limits<C>::max());
+void Grafo::dijkstra(int initial) {
+    int n = this->paises.size();
+    std::vector<int> distance(n, std::numeric_limits<int>::max());
     std::vector<int> parent(n, -1);
     std::vector<bool> visited(n, false);
 
@@ -468,7 +471,7 @@ void Grafo::dijkstra(PaisG& initial) {
     distance[startIndex] = 0;
 
     // Priority queue to store vertices and their distances
-    std::priority_queue<std::pair<C, int>, std::vector<std::pair<C, int>>, std::greater<std::pair<C, int>>> pq;
+    std::priority_queue<std::pair<int, int>, std::vector<std::pair<int, int>>, std::greater<std::pair<int, int>>> pq;
     pq.push({0, startIndex});
 
     while (!pq.empty()) {
@@ -482,9 +485,9 @@ void Grafo::dijkstra(PaisG& initial) {
         visited[u] = true;
 
         // Explore all neighbors of the selected vertex 'u'
-        for (const auto& neighbor : edges[u]) {
-            int v = neighbor.first;
-            C edgeCost = neighbor.second;
+        for(typename std::list<std::pair<int,int>>::iterator it = this->conexiones[u].begin() ; it != this->conexiones[u].end(); it++){
+            int v = (*it).first;
+            int edgeCost = (*it).second;
 
             if (!visited[v] && distance[u] + edgeCost < distance[v]) {
                 distance[v] = distance[u] + edgeCost;
@@ -495,10 +498,11 @@ void Grafo::dijkstra(PaisG& initial) {
     }
 
     // Print the edges and distances
+    std::cout << "GRAPH" << std::endl;
     std::cout << "Edges and Distances from vertex " << initial << ":" << std::endl;
     for (int i = 0; i < n; ++i) {
         if (i != startIndex) {
-            std::cout << "Edge: " << vertices[parent[i]] << " - " << vertices[i] << " with distance " << distance[i] << std::endl;
+            std::cout << "Edge: " << this->paises[parent[i]].get_id() << " - " << this->paises[i].get_id() << " with distance " << distance[i] << std::endl;
         }
     }
 }
