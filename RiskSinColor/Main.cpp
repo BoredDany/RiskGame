@@ -278,7 +278,19 @@ int main() {
             cout << "Comando incompleto, ingrese el parametro" << endl;
         }
         else if (comando == "conquista_mas_barata") { // Operaciones para indicar conquista más barata
-            cout << "Comando 'conquista_mas_barata' recibido\n";
+            if(finalizado){
+                cout << "JUEGO FINALIZADO, HA GANADO EL JUGADOR " <<ganador<< endl;
+            }else if(inicializado){
+                cout << "Comando 'conquista_mas_barata' recibido\n";
+                if(numTurno-1 < 0){
+                    cout << "Indicar turno de jugador" << endl;
+                }else{
+                    risk.get_grafo().conquistaMasBarata(risk.get_jugadores()[numTurno-1].getId());
+                }
+            }else{
+                cout << "Partida no inicializada\n";
+            }
+
         }
         else {
             cout << "Comando invalido" << endl;

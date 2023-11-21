@@ -47,9 +47,8 @@ void Partida::aggJugador(Jugador j){
 
 void Partida::cargarTablero(std::string archivo_cartas){
     std::ifstream inputFile(archivo_cartas);
-    std::string line, word;
+    std::string line, word, figura, pais, continente;
     int territorio;
-    std::string figura, pais, continente;
 
     if(inputFile.is_open()){
         while(getline(inputFile,line)){
@@ -74,7 +73,25 @@ void Partida::cargarTablero(std::string archivo_cartas){
 }
 
 void Partida::cargarConexiones(std::string archivo){
-    this->grafo.readConnections(archivo);
+    std::ifstream file (archivo);
+    std::string line, word;
+
+    if(file.is_open()){
+        while(getline(file,line,'\n')){
+            std::stringstream ss(line);
+            getline(ss,word,'-');
+            int idPais = stoi(word);
+            PaisG pais = this->grafo.getPaises()[this->grafo.searchVertice(idPais)];
+            while(getline(ss,word,';')){
+                int idVecino = stoi(word);
+                PaisG vecino = this->grafo.getPaises()[this->grafo.searchVertice(idVecino)];
+                this->grafo.addEdge(pais, vecino, 0);
+            }
+        }
+    }else{
+        std::cout<<"Archivo de conexiones no leido"<<std::endl;
+    }
+    file.close();
 }
 
 void Partida::inicializarJugadores(){

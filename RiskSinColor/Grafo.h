@@ -70,9 +70,9 @@ public:
     void moverUnidades(int idJugador, int origen, int destino, int unidadesM);
 
     //algoritmos
-    void readVertices(std::list < Carta > cartas);
-    void readConnections(std::string archivo);
-
+    void conquistaMasBarata(int idJugador);
+    void updateCosts();
+    void dijkstra(PaisG& initial);
 };
 
 #endif //RISKSINCOLOR_GRAFO_H

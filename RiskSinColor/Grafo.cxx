@@ -74,8 +74,6 @@ bool Grafo::addEdge(PaisG& origin, PaisG& destination, int cost){
 //----------------------------------------------------------------------------------------------
 
 //searching
-
-
 int Grafo::searchVertice(int vertex){
     int vertexFound = -1;
     for(int i = 0 ; i < this->paises.size() ; i++){
@@ -105,6 +103,7 @@ bool Grafo::searchEdge(int origin, int destination){
 
 //----------------------------------------------------------------------------------------------
 //tours
+
 void Grafo::plain(){
     std::cout << "PAISES" << std::endl;
     for(int i = 0 ; i < this->paises.size() ; i++){
@@ -217,8 +216,8 @@ bool Grafo::lleno(){
 }
 
 //----------------------------------------------------------------------------------------------
-
 //turno
+
 int Grafo::calcularPaisesJugador(int idJugador){
     int paises = 0;
     for(int i = 0 ; i < this->paises.size() ; i++){
@@ -311,8 +310,8 @@ bool Grafo::jugadorOcupaPais(int idJugador, int idPais){
     return false;
 }
 
-//atacar
 //----------------------------------------------------------------------------------------------
+//atacar
 
 bool Grafo::puedeAtacar(int idJugador){
     for(int i = 0 ; i < this->paises.size() ; i++){
@@ -430,31 +429,76 @@ void Grafo::moverUnidades(int idJugador, int origen, int destino, int unidadesM)
 
 //----------------------------------------------------------------------------------------------
 //algoritmos
-void Grafo::readVertices(std::list < Carta > cartas){
-    for(std::list < Carta >::iterator it = cartas.begin() ; it != cartas.end() ; it++){
-        PaisG pais((*it).getId(), (*it).getPais(), (*it).getContinente());
-        this->addVertex(pais);
+
+void Grafo::updateCosts(){
+    for(int i = 0 ; i < this->paises.size() ; i++){
+        int costo = this->paises[i].get_unidades();
+        for(int j = 0 ; j < this->conexiones.size() ; j++){
+            for(typename std::list < std::pair <int,int> >::iterator it = this->conexiones[j].begin(); it != this->conexiones[j].end(); it++){
+                if(this->paises[i].get_id() == this->paises[(*it).first].get_id()){
+                    (*it).second = costo;
+                }
+            }
+        }
     }
 }
 
-void Grafo::readConnections(std::string archivo){
-    std::ifstream file (archivo);
-    std::string line, word;
+void Grafo::conquistaMasBarata (int idJugador) {
 
-    if(file.is_open()){
-        while(getline(file,line,'\n')){
-            std::stringstream ss(line);
-            getline(ss,word,'-');
-            int idPais = stoi(word);
-            PaisG pais = this->paises[searchVertice(idPais)];
-            while(getline(ss,word,';')){
-                int idVecino = stoi(word);
-                PaisG vecino = this->paises[searchVertice(idVecino)];
-                this->addEdge(pais, vecino, 0);
+    std::cout << "Jugador " << idJugador << std::endl;
+    updateCosts();
+
+}
+
+void Grafo::dijkstra(PaisG& initial) {
+    int n = vertices.size();
+
+    std::vector<C> distance(n, std::numeric_limits<C>::max());
+    std::vector<int> parent(n, -1);
+    std::vector<bool> visited(n, false);
+
+    // Find the index of the start vertex
+    int startIndex = searchVertice(initial);
+
+    if (startIndex == -1) {
+        std::cerr << "Error: Start vertex not found." << std::endl;
+        return;
+    }
+
+    distance[startIndex] = 0;
+
+    // Priority queue to store vertices and their distances
+    std::priority_queue<std::pair<C, int>, std::vector<std::pair<C, int>>, std::greater<std::pair<C, int>>> pq;
+    pq.push({0, startIndex});
+
+    while (!pq.empty()) {
+        int u = pq.top().second;
+        pq.pop();
+
+        if (visited[u]) {
+            continue; // Skip if the vertex is already visited
+        }
+
+        visited[u] = true;
+
+        // Explore all neighbors of the selected vertex 'u'
+        for (const auto& neighbor : edges[u]) {
+            int v = neighbor.first;
+            C edgeCost = neighbor.second;
+
+            if (!visited[v] && distance[u] + edgeCost < distance[v]) {
+                distance[v] = distance[u] + edgeCost;
+                parent[v] = u;
+                pq.push({distance[v], v});
             }
         }
-    }else{
-        std::cout<<"Archivo de conexiones no leido"<<std::endl;
     }
-    file.close();
+
+    // Print the edges and distances
+    std::cout << "Edges and Distances from vertex " << initial << ":" << std::endl;
+    for (int i = 0; i < n; ++i) {
+        if (i != startIndex) {
+            std::cout << "Edge: " << vertices[parent[i]] << " - " << vertices[i] << " with distance " << distance[i] << std::endl;
+        }
+    }
 }
