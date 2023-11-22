@@ -550,10 +550,10 @@ void Grafo::conquistaCosto (int idJugador, int idPais) {
     int idPaisCercano;
     std::cout << "Jugador " << idJugador << std::endl;
     updateCosts();
-    dijkstraCostoConquista(idJugador,idPais);
 
     idPaisCercano = buscarMasCercano(idJugador,idPais);
-    dijkstraCostoConquista(idJugador, idPaisCercano);
+    std::cout<<"ID pais cercano: "<<idPaisCercano<<std::endl;
+    dijkstraCostoConquista(idPaisCercano, idPais);
 }
 
 int Grafo::buscarMasCercano(int idJugador, int destiny){
@@ -606,28 +606,21 @@ int Grafo::buscarMasCercano(int idJugador, int destiny){
     return -1;
 }
 
-void Grafo::dijkstraCostoConquista(int idJugador,int destiny) {
+void Grafo::dijkstraCostoConquista(int origin, int destiny) {
     int n = this->paises.size();
     std::vector<int> distance(n, std::numeric_limits<int>::max());
     std::vector<int> parent(n, -1);
     std::vector<bool> visited(n, false);
 
-    // Find the index of the start vertex
-    int startIndex = searchVertice(destiny);
-
-    if (startIndex == -1) {
-        std::cerr << "Error: Start vertex not found." << std::endl;
-        return;
-    }
-
-    distance[startIndex] = 0;
+    distance[origin] = 0;
 
     // Priority queue to store vertices and their distances
     std::priority_queue<std::pair<int, int>, std::vector<std::pair<int, int> >, std::greater<std::pair<int, int> > > pq;
-    pq.push({0, startIndex});
+    pq.push({0, origin});
 
     while (!pq.empty()) {
         int u = pq.top().second;
+        int costU = pq.top().first;
         pq.pop();
 
         if (visited[u]) {
@@ -636,9 +629,14 @@ void Grafo::dijkstraCostoConquista(int idJugador,int destiny) {
 
         visited[u] = true;
 
+        //out of loop when we find the destiny
+        if(u == destiny){
+            pq.push({0, origin});
+            break;
+        }
+
         // Explore all neighbors of the selected vertex 'u'
-        for (typename std::list<std::pair<int, int> >::iterator it = this->conexiones[u].begin();
-             it != this->conexiones[u].end(); it++) {
+        for (typename std::list<std::pair<int, int> >::iterator it = this->conexiones[u].begin();it != this->conexiones[u].end(); it++) {
             int v = (*it).first;
             int edgeCost = (*it).second;
 
@@ -651,12 +649,11 @@ void Grafo::dijkstraCostoConquista(int idJugador,int destiny) {
     }
 
     // Print the edges and distances
-    std::cout << "GRAPH" << std::endl;
-    std::cout << "Edges and Distances from vertex " << destiny << ":" << std::endl;
-    for (int i = 0; i < n; ++i) {
-        if (i != startIndex) {
-            std::cout << "Edge: " << this->paises[parent[i]].get_id() << " - " << this->paises[i].get_id()
-                      << " with distance " << distance[i] << std::endl;
-        }
+    std::cout << "Camino a recorrer: " << std::endl;
+    while(!pq.empty()){
+        //if()
+        std::cout<<pq.top().second<<std::endl;
+        pq.pop();
     }
+    std::cout<<destiny<<std::endl;
 }
