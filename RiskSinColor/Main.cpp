@@ -45,9 +45,9 @@ int main() {
             else if (cd[0] == "turno") {
                 if(!inicializado){
                     cout << "Juego no incializado" << endl;
-                }
-
-                else{
+                }else if(finalizado){
+                    cout << "JUEGO FINALIZADO, HA GANADO EL JUGADOR " <<ganador<< endl;
+                }else{
                     if(!turnonumerico(cd[1])){
                         int turno = stoi(cd[1]);
                         if(turnoValido(risk.get_jugadores(), turno)){
@@ -56,6 +56,17 @@ int main() {
                                 if(risk.jugadorVigente(numTurno)){
 
                                     cout<<"------- TURNO DEL JUGADOR "<<turno<<"-------"<<endl<<endl;
+                                    do{
+                                        cout<<"Desea consultar conquistas? (al finalizar su turno podra consultar nuevamente ingresando el comando)\n1.Si\n2.No\n$";
+                                        cin>>rta;
+                                        if(rta == 1){
+                                            cin.ignore();
+                                            consultas(risk.get_jugadores()[numTurno-1].getId(), risk);
+                                        } else if(rta == 2){
+                                            break;
+                                        }
+                                    }while(rta < 1 || rta > 2);
+
                                     cout<<"RECLAMO DE UNIDADES"<<endl;
                                     risk.intercambioNormal(numTurno);
                                     risk.intercambioPorPaises(numTurno);
@@ -237,7 +248,14 @@ int main() {
             }
             else if (cd[0] == "costo_conquista") {
                 cout << "Costo de la conquista " << cd[1] << " :recibido" << endl;
-                if(risk.get_grafo().jugadorOcupaPais(risk.get_jugadores()[numTurno-1].getId(),std::stoi(cd[1]))){
+                if(!inicializado){
+                    cout << "Juego no inicializado" << endl;
+                }else if(turnonumerico(cd[1])){
+                    cout << "Indique un numero de pais" <<ganador<< endl;
+                }
+                else if(finalizado){
+                    cout << "JUEGO FINALIZADO, HA GANADO EL JUGADOR " <<ganador<< endl;
+                }else if(risk.get_grafo().jugadorOcupaPais(risk.get_jugadores()[numTurno-1].getId(),std::stoi(cd[1]))){
                     cout << "Jugador domina el pais, no se puede conquistar a si mismo" << endl;
                 }else{
                     risk.get_grafo().conquistaCosto(risk.get_jugadores()[numTurno-1].getId(),std::stoi(cd[1]));

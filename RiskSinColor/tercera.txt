@@ -1,3 +1,0 @@
-TAD GRAFO
-- paises: vector de Pais (vertices)
-- conexiones: vector de lista de pares (conexiones)

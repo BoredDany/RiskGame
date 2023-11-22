@@ -427,7 +427,6 @@ int Grafo::dijkstra(int initial, int idJugador, std::vector<int>& distance, std:
     }
 
     distance[startIndex] = 0;
-    int unidadesJugador = this->paises[startIndex].get_unidades();
 
     // Cola de prioridad para almacenar vértices y sus distancias
     std::priority_queue<std::pair<int, int>, std::vector<std::pair<int, int>>, std::greater<std::pair<int, int>>> pq;
@@ -461,7 +460,7 @@ int Grafo::dijkstra(int initial, int idJugador, std::vector<int>& distance, std:
 
     //Find best path based on distance
     for (int i = 0; i < n; ++i) {
-        if (i != startIndex && this->paises[i].get_id_jugador() != idJugador && distance[i] < bestDistance && unidadesJugador >= distance[i]) {
+        if (i != startIndex && this->paises[i].get_id_jugador() != idJugador && distance[i] < bestDistance) {
             bestDistance = distance[i];
         }
     }

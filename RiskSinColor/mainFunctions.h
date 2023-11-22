@@ -217,3 +217,36 @@ bool verificarArchivo(std::string nameFile, std::string extension){
     }
     return false;
 }
+
+void consultas(int idJugador, Partida& risk){
+    int rta;
+    std::string cd[5];
+    std::string comando;
+    bool hayEspacio;
+    do{
+        cout << "Ingrese el comando\n$";
+        getline(cin, comando);
+        hayEspacio = tiene_espacio(comando, cd);
+        if(hayEspacio){
+            if(turnonumerico(cd[1])){
+                std::cout << "Indique un numero de pais"<< std::endl;
+            }else if(cd[0] == "costo_conquista" && !cd[1].empty()){
+                if(risk.get_grafo().jugadorOcupaPais(idJugador,std::stoi(cd[1]))){
+                    std::cout << "Jugador domina el pais, no se puede conquistar a si mismo" << std::endl;
+                }else{
+                    risk.get_grafo().conquistaCosto(idJugador,std::stoi(cd[1]));
+                }
+            }else{
+                std::cout << "Comando incorrecto" << std::endl;
+            }
+        }else if (comando == "conquista_mas_barata"){
+            risk.get_grafo().conquistaMasBarata(idJugador);
+        }else{
+            std::cout << "Comando incorrecto" << std::endl;
+        }
+        limpiar(cd);
+        std::cout<<"Desea consultar mas? (al finalizar su turno podra consultar nuevamente ingresando el comando)\n1.Si\n2.No\n$";
+        cin>>rta;
+        cin.ignore();
+    }while(rta != 2);
+}
