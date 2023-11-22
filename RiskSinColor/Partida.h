@@ -58,7 +58,6 @@ public:
 
     //operaciones de fortificación
     void fortificarTerritorio(int jugadorIndex);
-    void moverUnidades(int posJ, int origen, int destino, int unidadesM);
 
     //operaciones de terminación del juego
     bool jugadorVigente(int posJ);

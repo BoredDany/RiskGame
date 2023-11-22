@@ -237,7 +237,11 @@ int main() {
             }
             else if (cd[0] == "costo_conquista") {
                 cout << "Costo de la conquista " << cd[1] << " :recibido" << endl;
-                risk.get_grafo().conquistaCosto(risk.get_jugadores()[numTurno-1].getId(),std::stoi(cd[1]));
+                if(risk.get_grafo().jugadorOcupaPais(risk.get_jugadores()[numTurno-1].getId(),std::stoi(cd[1]))){
+                    cout << "Jugador domina el pais, no se puede conquistar a si mismo" << endl;
+                }else{
+                    risk.get_grafo().conquistaCosto(risk.get_jugadores()[numTurno-1].getId(),std::stoi(cd[1]));
+                }
             }
             else {
                 cout << "Comando invalido" << endl;

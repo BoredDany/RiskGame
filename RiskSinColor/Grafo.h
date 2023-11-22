@@ -25,10 +25,6 @@ public:
     std::vector < PaisG > getPaises();
     std::vector < std::list < std::pair < int, int > > > getEdges();
 
-    //setters
-    void setVertices(std::vector < PaisG >& vertices);
-    void setEdges(std::vector < std::list < std::pair < int, int > > >& edges);
-
     //inserting
     bool addVertex(PaisG& vertex);
     bool addEdge(PaisG& origin, PaisG& destination, int cost);
@@ -39,10 +35,6 @@ public:
 
     //tours
     void plain();
-    void bfs();
-    void doBFS(int startVertex, std::vector<bool>& visited, std::queue<int>& vertexQueue);
-    void dfs();
-    void doDFS(int currentVertex, std::vector<bool>& visited);
     void showEdges();
 
     //inicializacion
@@ -73,10 +65,8 @@ public:
     void conquistaMasBarata(int idJugador);
     void updateCosts();
     int dijkstra(int initial, int idJugador, std::vector<int>& distance, std::vector<std::list<int>>& paths);
-    void showPath(int startIndex, int bestDistance, std::vector<int>& distance);
-    void dijkstraCostoConquista(int origin, int destiny);
-    int buscarMasCercano(int idJugador, int destiny);
     void conquistaCosto (int idJugador, int idPais);
+    int dijkstraCostoConquista(int initial, int idJugador, int idPais, std::vector<int>& distance, std::vector<std::list<int>>& paths);
 };
 
 #endif //RISKSINCOLOR_GRAFO_H

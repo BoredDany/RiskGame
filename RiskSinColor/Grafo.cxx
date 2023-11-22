@@ -36,17 +36,6 @@ std::vector < std::list < std::pair < int, int > > > Grafo::getEdges(){
 }
 
 //----------------------------------------------------------------------------------------------
-//setters
-
-void Grafo::setVertices(std::vector < PaisG >& vertices){
-    this->paises = vertices;
-}
-
-void Grafo::setEdges(std::vector < std::list < std::pair < int, int > > >& edges){
-    this->conexiones = edges;
-}
-
-//----------------------------------------------------------------------------------------------
 //inserting
 
 bool Grafo::addVertex(PaisG& vertex){
@@ -108,65 +97,6 @@ void Grafo::plain(){
     std::cout << "PAISES" << std::endl;
     for(int i = 0 ; i < this->paises.size() ; i++){
         std::cout << this->paises[i].get_id() << " ; ";
-    }
-}
-
-void Grafo::bfs(){
-    std::vector<bool> visited(this->paises.size(), false);
-    std::queue<int> vertexQueue;
-
-    for (int i = 0; i < this->paises.size(); i++) {
-        if (!visited[i]) {
-            doBFS(i, visited, vertexQueue);
-        }
-    }
-}
-
-void Grafo::doBFS(int startVertex, std::vector<bool>& visited, std::queue<int>& vertexQueue){
-    visited[startVertex] = true;
-    vertexQueue.push(startVertex);
-
-    while (!vertexQueue.empty()) {
-        int currentVertex = vertexQueue.front();
-        vertexQueue.pop();
-
-        std::cout << this->paises[currentVertex].get_id() << ", ";
-
-        typename  std::list < std::pair < int, int > >::iterator itL;
-        itL = this->conexiones[currentVertex].begin();
-
-        for( ; itL != this->conexiones[currentVertex].end() ; itL++){
-            int neighbor = (*itL).first;
-            if (!visited[neighbor]) {
-                visited[neighbor] = true;
-                vertexQueue.push(neighbor);
-            }
-        }
-    }
-}
-
-void Grafo::dfs(){
-    std::vector<bool> visited(this->paises.size(), false);
-
-    for (int i = 0; i < this->paises.size(); ++i) {
-        if (!visited[i]) {
-            doDFS(i, visited);
-        }
-    }
-}
-
-void Grafo::doDFS(int currentVertex, std::vector<bool>& visited) {
-    visited[currentVertex] = true;
-    std::cout << this->paises[currentVertex].get_id() << ", ";
-
-    typename  std::list < std::pair < int, int > >::iterator itL;
-    itL = this->conexiones[currentVertex].begin();
-
-    for ( ; itL != this->conexiones[currentVertex].end(); itL++) {
-        int neighbor = (*itL).first;
-        if (!visited[neighbor]) {
-            doDFS(neighbor, visited);
-        }
     }
 }
 
@@ -444,7 +374,6 @@ void Grafo::updateCosts(){
 }
 
 void Grafo::conquistaMasBarata (int idJugador) {
-
     int n = this->paises.size();
     updateCosts();
     std::list < std::vector<int> > distancesDij;
@@ -479,15 +408,11 @@ void Grafo::conquistaMasBarata (int idJugador) {
                 for(itR = (*itP)[i].begin() ; itR != (*itP)[i].end(); itR++){
                     std::cout << this->paises[*itR].get_id() << " -> ";
                 }
-                /*for (int node : (*itP)[i]) {
-                    std::cout << this->paises[node].get_id() << " -> ";
-                }*/
-                std::cout << this->paises[i].get_id() << std::endl;
+                std::cout << this->paises[i].get_id() << std::endl << std::endl;
             }
         }
     }
 }
-
 
 int Grafo::dijkstra(int initial, int idJugador, std::vector<int>& distance, std::vector<std::list<int>>& paths) {
     int n = this->paises.size();
@@ -496,7 +421,6 @@ int Grafo::dijkstra(int initial, int idJugador, std::vector<int>& distance, std:
 
     // Encontrar el índice del vértice inicial
     int startIndex = searchVertice(initial);
-
     if (startIndex == -1) {
         std::cerr << "Error: Vértice inicial no encontrado." << std::endl;
         return -1;
@@ -546,114 +470,101 @@ int Grafo::dijkstra(int initial, int idJugador, std::vector<int>& distance, std:
 }
 
 void Grafo::conquistaCosto (int idJugador, int idPais) {
-
-    int idPaisCercano;
-    std::cout << "Jugador " << idJugador << std::endl;
+    if(searchVertice(idPais) == -1){
+        std::cout << "Pais no existe" << std::endl;
+        return;
+    }
+    int n = this->paises.size();
     updateCosts();
+    std::list < std::vector<int> > distancesDij;
+    std::list < std::vector<std::list<int>> > pathsDij;
 
-    idPaisCercano = buscarMasCercano(idJugador,idPais);
-    std::cout<<"ID pais cercano: "<<idPaisCercano<<std::endl;
-    dijkstraCostoConquista(idPaisCercano, idPais);
+    int bestDistance = std::numeric_limits<int>::max();
+    for(int i = 0 ; i < this->paises.size() ; i++){
+        if(this->paises[i].get_id_jugador() == idJugador){
+            std::vector<int> distance(n, std::numeric_limits<int>::max());
+            std::vector<std::list<int>> paths(n); // Vector de listas para almacenar los caminos
+            int distanceP = dijkstraCostoConquista(this->paises[i].get_id(), idJugador, idPais, distance, paths);
+            distancesDij.push_back(distance);
+            pathsDij.push_back(paths);
+            if(distanceP <= bestDistance){
+                bestDistance = distanceP;
+            }
+        }
+    }
+
+    std::cout << "\nJugador:" << idJugador << "\nPara conquistar el pais " << idPais << " estas son sus opciones:" << std::endl << std::endl;
+
+    typename std::list < std::vector<std::list<int>> >::iterator itP = pathsDij.begin();
+
+    for(typename std::list < std::vector<int> >::iterator itD = distancesDij.begin() ; itD != distancesDij.end(); itD++, itP++){
+        for(int i = 0 ; i < n ; i++){
+            if(idPais == this->paises[i].get_id() && (*itD)[i] == bestDistance){
+                typename std::list<int>::iterator itR = (*itP)[i].begin();
+
+                std::cout << "Para conquistar el territorio: " << this->paises[i].get_id() <<
+                          " debe atacar desde el territorio: " << this->paises[(*itR)].get_id() << " derrotando " << (*itD)[i] << " tropa(s) en total" << std::endl;
+                std::cout << "Debe pasar por los territorios:";
+
+                for(itR = (*itP)[i].begin() ; itR != (*itP)[i].end(); itR++){
+                    std::cout << this->paises[*itR].get_id() << " -> ";
+                }
+                std::cout << this->paises[i].get_id() << std::endl << std::endl;
+            }
+        }
+    }
 }
 
-int Grafo::buscarMasCercano(int idJugador, int destiny){
+int Grafo::dijkstraCostoConquista(int initial, int idJugador, int idPais, std::vector<int>& distance, std::vector<std::list<int>>& paths) {
     int n = this->paises.size();
-    std::vector<int> distance(n, std::numeric_limits<int>::max());
-    std::vector<int> parent(n, -1);
+    int bestDistance = std::numeric_limits<int>::max();
     std::vector<bool> visited(n, false);
 
-    // Find the index of the start vertex
-    int startIndex = searchVertice(destiny);
-
+    // Encontrar el índice del vértice inicial
+    int startIndex = searchVertice(initial);
     if (startIndex == -1) {
-        std::cerr << "Error: Start vertex not found." << std::endl;
+        std::cerr << "Error: Vértice inicial no encontrado." << std::endl;
         return -1;
     }
 
     distance[startIndex] = 0;
 
-    // Priority queue to store vertices and their distances
-    std::priority_queue<std::pair<int, int>, std::vector<std::pair<int, int> >, std::greater<std::pair<int, int> > > pq;
-    pq.push( { 0, startIndex} );
-
-    while (!pq.empty()) {
-        int u = pq.top().second; //vertice - indice del país destino
-        pq.pop();
-
-        if (visited[u]) {
-            continue; // Skip if the vertex is already visited
-        }
-
-        visited[u] = true;
-
-        // Explore all neighbors of the selected vertex 'u'
-        for(typename std::list<std::pair<int,int> >::iterator it = this->conexiones[u].begin() ; it != this->conexiones[u].end(); it++){
-            int v = (*it).first;
-            int edgeCost = (*it).second;
-
-            if (!visited[v] && distance[u] + edgeCost < distance[v]) {
-                distance[v] = distance[u] + edgeCost;
-                parent[v] = u;
-                pq.push({distance[v], v});
-                for(PaisG p: this->getPaises()){
-                    if((p.get_id() == pq.top().second)&&(p.get_id_jugador() == idJugador)){
-                        return p.get_id(); //retorno el id del país
-                    }
-                }
-            }
-        }
-    }
-    return -1;
-}
-
-void Grafo::dijkstraCostoConquista(int origin, int destiny) {
-    int n = this->paises.size();
-    std::vector<int> distance(n, std::numeric_limits<int>::max());
-    std::vector<int> parent(n, -1);
-    std::vector<bool> visited(n, false);
-
-    distance[origin] = 0;
-
-    // Priority queue to store vertices and their distances
-    std::priority_queue<std::pair<int, int>, std::vector<std::pair<int, int> >, std::greater<std::pair<int, int> > > pq;
-    pq.push({0, origin});
+    // Cola de prioridad para almacenar vértices y sus distancias
+    std::priority_queue<std::pair<int, int>, std::vector<std::pair<int, int>>, std::greater<std::pair<int, int>>> pq;
+    pq.push({0, startIndex});
 
     while (!pq.empty()) {
         int u = pq.top().second;
-        int costU = pq.top().first;
         pq.pop();
 
         if (visited[u]) {
-            continue; // Skip if the vertex is already visited
+            continue; // Saltar si el vértice ya fue visitado
         }
 
         visited[u] = true;
 
-        //out of loop when we find the destiny
-        if(u == destiny){
-            pq.push({0, origin});
-            break;
-        }
-
-        // Explore all neighbors of the selected vertex 'u'
-        for (typename std::list<std::pair<int, int> >::iterator it = this->conexiones[u].begin();it != this->conexiones[u].end(); it++) {
+        // Explorar todos los vecinos del vértice seleccionado 'u'
+        for (typename std::list<std::pair<int,int>>::iterator it = this->conexiones[u].begin(); it != this->conexiones[u].end(); it++) {
             int v = (*it).first;
             int edgeCost = (*it).second;
 
             if (!visited[v] && distance[u] + edgeCost < distance[v]) {
                 distance[v] = distance[u] + edgeCost;
-                parent[v] = u;
                 pq.push({distance[v], v});
+
+                // Actualizar el camino hacia 'v' con la información de 'u'
+                paths[v] = paths[u]; // Copiar el camino desde el nodo inicial hasta 'u'
+                paths[v].push_back(u); // Agregar 'u' al camino hacia 'v'
             }
         }
     }
 
-    // Print the edges and distances
-    std::cout << "Camino a recorrer: " << std::endl;
-    while(!pq.empty()){
-        //if()
-        std::cout<<pq.top().second<<std::endl;
-        pq.pop();
+    //Find best path based on distance
+    for (int i = 0; i < n; ++i) {
+        if (i != startIndex && this->paises[i].get_id_jugador() != idJugador && distance[i] < bestDistance && idPais == this->paises[i].get_id()) {
+            bestDistance = distance[i];
+        }
     }
-    std::cout<<destiny<<std::endl;
+
+    return bestDistance;
 }
