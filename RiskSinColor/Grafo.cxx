@@ -392,7 +392,7 @@ void Grafo::conquistaMasBarata (int idJugador) {
             }
         }
     }
-    std::cout << "Conquista(s) mas barata(s) para el jugador " << idJugador << ":" << std::endl;
+    std::cout << "Conquista(s) mas barata(s) para el jugador " << idJugador << ":" << std::endl << std::endl;
 
     typename std::list < std::vector<std::list<int>> >::iterator itP = pathsDij.begin();
 
@@ -403,10 +403,10 @@ void Grafo::conquistaMasBarata (int idJugador) {
 
                 std::cout << "Conquistar el territorio: " << this->paises[i].get_id() <<
                           " desde el territorio: " << this->paises[(*itR)].get_id() << " derrotando " << (*itD)[i] << " tropa(s)" << std::endl;
-                std::cout << "Para conquistar el territorio  " << this->paises[i].get_id() << " debe pasar por los territorios:";
+                std::cout << "Debe pasar por los territorios:";
 
                 for(itR = (*itP)[i].begin() ; itR != (*itP)[i].end(); itR++){
-                    std::cout << this->paises[*itR].get_id() << " -> ";
+                    std::cout << this->paises[*itR].get_id() << " -- ";
                 }
                 std::cout << this->paises[i].get_id() << std::endl << std::endl;
             }
@@ -503,11 +503,11 @@ void Grafo::conquistaCosto (int idJugador, int idPais) {
                 typename std::list<int>::iterator itR = (*itP)[i].begin();
 
                 std::cout << "Para conquistar el territorio: " << this->paises[i].get_id() <<
-                          " debe atacar desde el territorio: " << this->paises[(*itR)].get_id() << " derrotando " << (*itD)[i] << " tropa(s) en total" << std::endl;
+                          " debe atacar desde el territorio: " << this->paises[(*itR)].get_id() << " conquistando " << (*itD)[i] << " unidades de ejercito" << std::endl;
                 std::cout << "Debe pasar por los territorios:";
 
                 for(itR = (*itP)[i].begin() ; itR != (*itP)[i].end(); itR++){
-                    std::cout << this->paises[*itR].get_id() << " -> ";
+                    std::cout << this->paises[*itR].get_id() << " -- ";
                 }
                 std::cout << this->paises[i].get_id() << std::endl << std::endl;
             }
