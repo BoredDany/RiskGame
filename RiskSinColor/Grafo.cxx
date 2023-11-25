@@ -320,7 +320,8 @@ bool Grafo::puedeFortificar(int idJugador){
 
 bool Grafo::unidadesSuficientes(int idJugador, int idPais, int unidades){
     for(int i = 0 ; i < this->paises.size() ; i++){
-        if(this->paises[i].get_id_jugador() == idJugador && this->paises[i].get_unidades() >= unidades){
+        if(this->paises[i].get_id_jugador() == idJugador && this->paises[i].get_id() == idPais
+        && this->paises[i].get_unidades() >= unidades){
             return true;
         }
     }
